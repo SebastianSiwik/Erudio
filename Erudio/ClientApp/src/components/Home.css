@@ -1,0 +1,92 @@
+textarea {
+    resize: none;
+}
+
+.left-side {
+    padding: 50px 50px 50px 50px;
+}
+
+.row-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.text-right {
+    position: relative;
+    left: 40px;
+}
+
+.text-box {
+    background: #FBFDFF;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    width: 100%;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+}
+
+.small-box {
+    height: 38px;
+}
+
+.big-box {
+    height: 143px;
+}
+
+button {
+    width: 143px;
+    height: 46px;
+    align-self: flex-end;
+    background: #FBFDFF;
+    border: 2px solid #000000;
+    border-radius: 999px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+    text-transform: uppercase;
+}
+
+Form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px;
+}
+
+.background {
+    max-width: 50%;
+    padding: 50px 0px 0px 50px;
+    align-self: end;
+}
+
+.image {
+    width: 40px;
+    height: auto;
+}
+
+h1 {
+    font-family: Maven Pro;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 28px;
+
+    color: rgba(0, 0, 0, 0.75);
+}
+
+p {
+    font-family: Maven Pro;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+
+    color: rgba(0, 0, 0, 0.75);
+}
