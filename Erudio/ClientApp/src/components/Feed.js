@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import '../App.css';
 import './Feed.css';
 import flagPoland from '../images/flag_poland.png';
@@ -11,21 +11,39 @@ import arrow from '../images/arrow_right.svg';
 import send from '../images/send.svg';
 import sendDisabled from '../images/send-disabled.svg';
 
-function LanguageChoiceBar(props) {
+const LanguageChoice = ({ choice, active, onClick }) => {
+    return (
+        <li onClick={onClick} className={active ? 'selected-language-option' : ''}>
+            {choice}
+        </li>
+    );
+}
+
+const LanguageChoiceBar = () => {
+    const [chosen, setChosen] = useState();
+    const choices = [
+        'All',
+        'Polish to English (UK)',
+        'English (UK) to Polish',
+        'Polish to English (US)',
+        'English (US) to Polish'
+    ];
+
     return (
         <div className='language-bar'>
             <ul className='language-bar-list'>
-                <li>All</li>
-                <li>Polish to English (UK)</li>
-                <li>English (UK) to Polish</li>
-                <li>Polish to English (US)</li>
-                <li>English (US) to Polish</li>
+                {choices.map(choice => (
+                    <LanguageChoice key={choice}
+                                    choice={choice}
+                                    active={choice === chosen}
+                                    onClick={() => setChosen(choice)} />
+                ))}
             </ul>
         </div>
     );
 }
 
-function User(props) {
+const User = (props) => {
     return (
         <div className='user'>
             <img className='avatar' src={props.avatar} /> {props.name}
@@ -81,19 +99,19 @@ export class DetailedRequest extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            graySendButton: true
+            sendButtonDisabled: true
         }
     }
 
     handleSendButtonColor(event) {
-        if (this.state.graySendButton && event.target.textContent.trim() !== '') {
+        if (this.state.sendButtonDisabled && event.target.textContent.trim() !== '') {
             this.setState({
-                graySendButton: false
+                sendButtonDisabled: false
             });
         }
-        else if (!this.state.graySendButton && event.target.textContent.trim() === '') {
+        else if (!this.state.sendButtonDisabled && event.target.textContent.trim() === '') {
             this.setState({
-                graySendButton: true
+                sendButtonDisabled: true
             });
         }
     }
@@ -115,7 +133,7 @@ export class DetailedRequest extends Component {
                           placeholder='Translate...'
                           onKeyUp={event => this.handleSendButtonColor(event)}
                           contentEditable/>
-                    <img className='send' src={this.state.graySendButton ? sendDisabled : send}/>
+                    <img className='send' src={this.state.sendButtonDisabled ? sendDisabled : send}/>
                 </div>
             </div>
         );
