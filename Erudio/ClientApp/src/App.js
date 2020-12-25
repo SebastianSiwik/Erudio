@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Home } from './components/Home';
+import { Feed } from './components/Feed';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
@@ -15,6 +16,7 @@ export default class App extends Component {
     return (
       <Layout>
         <Route exact path='/' component={Home} />
+        <Route path='/feed' component={Feed} />
         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
       </Layout>
     );

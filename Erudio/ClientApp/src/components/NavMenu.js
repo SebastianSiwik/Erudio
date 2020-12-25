@@ -26,7 +26,7 @@ export class NavMenu extends Component {
   render () {
     return (
       <header>
-        <Navbar className="navbar navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
+        <Navbar className="navbar navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow" light>
           <Container>
             <NavbarBrand tag={Link} to="/">
               <img className='logo' src={logo} />
@@ -35,7 +35,7 @@ export class NavMenu extends Component {
             <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
               <ul className="navbar-items-container navbar-nav flex-grow">
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/fetch-data">Browse</NavLink>
+                  <NavLink tag={Link} className="text-dark" to="/feed">Browse</NavLink>
                 </NavItem>
                 <LoginMenu>
                 </LoginMenu>
