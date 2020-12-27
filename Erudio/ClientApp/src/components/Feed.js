@@ -142,7 +142,7 @@ const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
         return request.id === requestId;
     });
     const selectedRequest = filterResult[0];
-    
+
     setHidden(filterResult.length === 0);
 
     return (
@@ -200,20 +200,30 @@ export class DetailedRequest extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            sendButtonDisabled: true
+            sendButtonDisabled: true,
+            translation: ''
         }
     }
 
-    handleSendButtonColor(event) {
-        if (this.state.sendButtonDisabled && event.target.textContent.trim() !== '') {
+    handleKeyUp(event) {
+        if (event.target.textContent.trim() !== '') {
             this.setState({
-                sendButtonDisabled: false
+                sendButtonDisabled: false,
+                translation: event.target.textContent.trim()
             });
         }
-        else if (!this.state.sendButtonDisabled && event.target.textContent.trim() === '') {
+        else if (event.target.textContent.trim() === '') {
             this.setState({
-                sendButtonDisabled: true
+                sendButtonDisabled: true,
+                translation: ''
             });
+        }
+    }
+
+    handleClick() {
+        if (this.state.sendButtonDisabled === false) {
+            const translation = { 'translation': this.state.translation };
+            return <form onSubmit={alert(JSON.stringify(translation))} />;
         }
     }
 
@@ -236,9 +246,9 @@ export class DetailedRequest extends Component {
                     <span className='translation-textbox'
                         role='textbox'
                         placeholder='Translate...'
-                        onKeyUp={event => this.handleSendButtonColor(event)}
+                        onKeyUp={event => this.handleKeyUp(event)}
                         contentEditable />
-                    <img className='send' src={this.state.sendButtonDisabled ? sendDisabled : send} />
+                    <img className='send' src={this.state.sendButtonDisabled ? sendDisabled : send} onClick={() => this.handleClick()} />
                 </div>
             </div>
         );
@@ -253,7 +263,7 @@ export const Feed = () => {
 
     return (
         <div>
-            <FilterBar 
+            <FilterBar
                 filterState={filterState}
                 setHidden={detailHiddenState[1]}
                 setRequestId={requestIdState[1]} />
