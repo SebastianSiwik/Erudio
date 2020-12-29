@@ -9,7 +9,7 @@ import avatar from '../images/avatar.png';
 import contextImage from '../images/iciu.png';
 import arrow from '../images/arrow_right.svg';
 import send from '../images/send.svg';
-import sendDisabled from '../images/send-disabled.svg';
+import sendDisabled from '../images/send_disabled.svg';
 
 const FilterChoice = ({ choice, active, onClick }) => {
     return (
@@ -52,7 +52,7 @@ const FilterBar = ({ filterState, setHidden, setRequestId }) => {
     );
 }
 
-const User = ({ avatar, name }) => {
+export const User = ({ avatar, name }) => {
     return (
         <div className='user'>
             <img className='avatar' src={avatar} /> {name}
@@ -108,7 +108,8 @@ const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
             'text': 'I will never let you down.',
             'context': 'Dunno, like they can count on you and stuff',
             'contextImage': contextImage,
-            'date': new Date('January 03 2021 12:30')
+            'date': new Date('January 03 2021 12:30'),
+            'answers': []
         },
         {
             'id': 1,
@@ -121,7 +122,8 @@ const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
             'text': 'Biscuit',
             'context': '',
             'contextImage': null,
-            'date': new Date('January 04 2021 12:30')
+            'date': new Date('January 04 2021 12:30'),
+            'answers': []
         },
         {
             'id': 2,
@@ -134,7 +136,8 @@ const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
             'text': 'Sprężarka',
             'context': 'no w aucie no',
             'contextImage': null,
-            'date': new Date('January 05 2021 12:30')
+            'date': new Date('January 05 2021 12:30'),
+            'answers': []
         }
     ];
 
