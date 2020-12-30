@@ -162,6 +162,7 @@
     font-size: 14px;
     line-height: 16px;
     color: #5F5F5F;
+    white-space: pre-wrap;
 }
 
 .context-image {

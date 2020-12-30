@@ -10,7 +10,6 @@
     box-sizing: border-box;
     border-radius: 5px;
     padding: 10px;
-    margin: 0px 10px;
 }
 
 .post-request-buttons {
@@ -33,6 +32,7 @@
 
 .post-textarea {
     margin-top: 15px;
+    padding: 5px;
     height: 90px;
 }
 

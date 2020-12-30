@@ -9,6 +9,7 @@ import flagUS from '../images/flag_us.png';
 import flagUnknown from '../images/flag_unknown.png';
 import avatar from '../images/avatar.png';
 import contextImage from '../images/iciu.png';
+import letDown from '../images/let_down.png';
 import arrow from '../images/arrow_right.svg';
 import like from '../images/like.svg';
 import likeEmpty from '../images/like_empty.svg';
@@ -20,7 +21,7 @@ import starEmpty from '../images/star_empty.svg';
 
 const Like = () => {
     const [liked, setLiked] = useState(false);
-    
+
     const handleClick = () => {
         setLiked(!liked);
     }
@@ -56,38 +57,24 @@ const Translation = (props) => {
                 <div className='date'>{props.date.toLocaleDateString()}</div>
                 <div className='translated-text'>{props.text}</div>
                 <div className='context'>{props.explanation}</div>
-                <div className='context-image'>{props.explanationImage}</div>
+                <img className='context-image' src={props.explanationImage} />
             </div>
             <div className='translation-buttons'>
                 <Report />
-                <Like />                
+                <Like />
             </div>
         </div>
     );
 }
 
-const Translations = () => {
-
-    const mockTranslation = 
-        {
-            'id': 0,
-            'requestId': 0,
-            'user': {
-                'name': 'Paweł',
-                'avatar': avatar
-            },
-            'text': 'Nigdy cię nie zawiodę.',
-            'explanation': '',
-            'explanationImage': null,
-            'date': new Date('January 03 2021 12:30')
-        }
-    
-
+const TranslationList = ({ translations }) => {
     return (
         <div className='translations'>
             <h1>Translations</h1>
             <div>
-                <Translation {...mockTranslation} />
+                {translations.map(translation => (
+                    <Translation {...translation} key={translation.id} />
+                ))}
             </div>
         </div>
     );
@@ -173,10 +160,38 @@ class Request extends Component {
 }
 
 export const Post = () => {
+
+    const mockTranslations = [
+        {
+            'id': 0,
+            'requestId': 0,
+            'user': {
+                'name': 'Paweł',
+                'avatar': avatar
+            },
+            'text': 'nigdy cie nie zawiode',
+            'explanation': '',
+            'explanationImage': null,
+            'date': new Date('January 03 2021 13:30')
+        },
+        {
+            'id': 1,
+            'requestId': 0,
+            'user': {
+                'name': 'Maciek',
+                'avatar': avatar
+            },
+            'text': 'Nigdy cię nie zawiodę.',
+            'explanation': 'nigdy - never\ncię - you\nnie zawiodę - will not let down',
+            'explanationImage': letDown,
+            'date': new Date('January 03 2021 13:34')
+        }
+    ];
+
     return (
         <div className='post'>
             <Request />
-            <Translations />
+            <TranslationList translations={mockTranslations} />
         </div>
     );
 }
