@@ -1,12 +1,11 @@
 import React, { Component, useState } from 'react';
 import '../App.css';
 import './Feed.css';
+import { feedMockRequests } from './Mock.js'
 import flagPoland from '../images/flag_poland.png';
 import flagUK from '../images/flag_uk.png';
 import flagUS from '../images/flag_us.png';
 import flagUnknown from '../images/flag_unknown.png';
-import avatar from '../images/avatar.png';
-import contextImage from '../images/iciu.png';
 import arrow from '../images/arrow_right.svg';
 import send from '../images/send.svg';
 import sendDisabled from '../images/send_disabled.svg';
@@ -95,53 +94,7 @@ const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
         setRequestId(requestId);
     };
 
-
-    const mockRequests = [
-        {
-            'id': 0,
-            'user': {
-                'name': 'Mark',
-                'avatar': avatar
-            },
-            'fromLanguage': 'English-UK',
-            'toLanguage': 'Polish',
-            'text': 'I will never let you down.',
-            'context': 'Dunno, like they can count on you and stuff',
-            'contextImage': contextImage,
-            'date': new Date('January 03 2021 12:30'),
-            'answers': []
-        },
-        {
-            'id': 1,
-            'user': {
-                'name': 'Jake',
-                'avatar': avatar
-            },
-            'fromLanguage': 'English-UK',
-            'toLanguage': 'English-US',
-            'text': 'Biscuit',
-            'context': '',
-            'contextImage': null,
-            'date': new Date('January 04 2021 12:30'),
-            'answers': []
-        },
-        {
-            'id': 2,
-            'user': {
-                'name': 'Bruno',
-                'avatar': avatar
-            },
-            'fromLanguage': 'Polish',
-            'toLanguage': 'English-US',
-            'text': 'Sprężarka',
-            'context': 'no w aucie no',
-            'contextImage': null,
-            'date': new Date('January 05 2021 12:30'),
-            'answers': []
-        }
-    ];
-
-    const filterResult = mockRequests.filter(request => {
+    const filterResult = feedMockRequests.filter(request => {
         return request.id === requestId;
     });
     const selectedRequest = filterResult[0];
@@ -150,7 +103,7 @@ const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
 
     return (
         <div className='page'>
-            <RequestList requests={mockRequests} selectedRequestId={requestId} onClick={handleClick} filter={filter} />
+            <RequestList requests={feedMockRequests} selectedRequestId={requestId} onClick={handleClick} filter={filter} />
             <DetailedRequest hidden={detailHidden} {...selectedRequest} />
         </div>
     );

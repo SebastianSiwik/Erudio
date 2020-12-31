@@ -1,17 +1,10 @@
 import React, { Component, useState } from 'react';
 import '../App.css';
 import './Post.css';
+import { postMockRequest, postMockTranslations } from './Mock.js'
 import { LanguageFromTo } from './Feed';
 import { User } from './Feed';
 import { ReportPopup } from './ReportPopup'
-import flagPoland from '../images/flag_poland.png';
-import flagUK from '../images/flag_uk.png';
-import flagUS from '../images/flag_us.png';
-import flagUnknown from '../images/flag_unknown.png';
-import avatar from '../images/avatar.png';
-import contextImage from '../images/iciu.png';
-import letDown from '../images/let_down.png';
-import arrow from '../images/arrow_right.svg';
 import like from '../images/like.svg';
 import likeEmpty from '../images/like_empty.svg';
 import send from '../images/send.svg';
@@ -106,21 +99,6 @@ class Request extends Component {
         }
     }
 
-    mockRequest = {
-        'id': 0,
-        'user': {
-            'name': 'Mark',
-            'avatar': avatar
-        },
-        'fromLanguage': 'English-UK',
-        'toLanguage': 'Polish',
-        'text': 'I will never let you down.',
-        'context': 'Dunno, like they can count on you and stuff',
-        'contextImage': contextImage,
-        'date': new Date('January 03 2021 12:30'),
-        'answers': []
-    }
-
     handleClick() {
         if (this.state.sendButtonDisabled === false) {
             const translation = { 'translation': this.state.translation };
@@ -132,15 +110,15 @@ class Request extends Component {
         return (
             <div className='post-request'>
                 <div className='row'>
-                    <User {...this.mockRequest.user} />
-                    <LanguageFromTo from={this.mockRequest.fromLanguage} to={this.mockRequest.toLanguage} />
+                    <User {...postMockRequest.user} />
+                    <LanguageFromTo from={postMockRequest.fromLanguage} to={postMockRequest.toLanguage} />
                 </div>
-                <div className='date'>{this.mockRequest.date.toLocaleDateString()}</div>
+                <div className='date'>{postMockRequest.date.toLocaleDateString()}</div>
                 <div className='post-request-row'>
                     <div>
-                        <div className='requested-text-detailed'>{this.mockRequest.text}</div>
-                        <div className='context'>{this.mockRequest.context === '' ? '' : 'Context: ' + this.mockRequest.context}</div>
-                        <img className='context-image' src={this.mockRequest.contextImage} />
+                        <div className='requested-text-detailed'>{postMockRequest.text}</div>
+                        <div className='context'>{postMockRequest.context === '' ? '' : 'Context: ' + postMockRequest.context}</div>
+                        <img className='context-image' src={postMockRequest.contextImage} />
                     </div>
                     <div className='post-request-buttons'>
                         <Bookmark />
@@ -164,37 +142,10 @@ export const Post = () => {
 
     const [popupShown, setPopup] = useState(false);
 
-    const mockTranslations = [
-        {
-            'id': 0,
-            'requestId': 0,
-            'user': {
-                'name': 'Paweł',
-                'avatar': avatar
-            },
-            'text': 'nigdy cie nie zawiode',
-            'explanation': '',
-            'explanationImage': null,
-            'date': new Date('January 03 2021 13:30')
-        },
-        {
-            'id': 1,
-            'requestId': 0,
-            'user': {
-                'name': 'Maciek',
-                'avatar': avatar
-            },
-            'text': 'Nigdy cię nie zawiodę.',
-            'explanation': 'nigdy - never\ncię - you\nnie zawiodę - will not let down',
-            'explanationImage': letDown,
-            'date': new Date('January 03 2021 13:34')
-        }
-    ];
-
     return (
         <div className='post'>
             <Request setPopup={setPopup} />
-            <TranslationList translations={mockTranslations} setPopup={setPopup} />
+            <TranslationList translations={postMockTranslations} setPopup={setPopup} />
 
             {popupShown ?
                 <ReportPopup handleClick={setPopup} />
