@@ -3,6 +3,7 @@ import '../App.css';
 import './Post.css';
 import { LanguageFromTo } from './Feed';
 import { User } from './Feed';
+import { ReportPopup } from './ReportPopup'
 import flagPoland from '../images/flag_poland.png';
 import flagUK from '../images/flag_uk.png';
 import flagUS from '../images/flag_us.png';
@@ -31,9 +32,9 @@ const Like = () => {
     );
 }
 
-const Report = () => {
+const Report = ({ setPopup }) => {
     return (
-        <img src={report} />
+        <img src={report} onClick={() => setPopup(true)} />
     );
 }
 
@@ -60,20 +61,20 @@ const Translation = (props) => {
                 <img className='context-image' src={props.explanationImage} />
             </div>
             <div className='translation-buttons'>
-                <Report />
+                <Report setPopup={props.setPopup} />
                 <Like />
             </div>
         </div>
     );
 }
 
-const TranslationList = ({ translations }) => {
+const TranslationList = ({ translations, setPopup }) => {
     return (
         <div className='translations'>
             <h1>Translations</h1>
             <div>
                 {translations.map(translation => (
-                    <Translation {...translation} key={translation.id} />
+                    <Translation {...translation} key={translation.id} setPopup={setPopup} />
                 ))}
             </div>
         </div>
@@ -143,7 +144,7 @@ class Request extends Component {
                     </div>
                     <div className='post-request-buttons'>
                         <Bookmark />
-                        <Report />
+                        <Report setPopup={this.props.setPopup} />
                     </div>
                 </div>
                 <textarea
@@ -160,6 +161,8 @@ class Request extends Component {
 }
 
 export const Post = () => {
+
+    const [popupShown, setPopup] = useState(false);
 
     const mockTranslations = [
         {
@@ -190,8 +193,13 @@ export const Post = () => {
 
     return (
         <div className='post'>
-            <Request />
-            <TranslationList translations={mockTranslations} />
+            <Request setPopup={setPopup} />
+            <TranslationList translations={mockTranslations} setPopup={setPopup} />
+
+            {popupShown ?
+                <ReportPopup handleClick={setPopup} />
+                : null
+            }
         </div>
     );
 }
