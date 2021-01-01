@@ -20,7 +20,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    padding: 0px 30px;
     list-style-type: none;
     font-family: Roboto;
     font-style: normal;

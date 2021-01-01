@@ -88,3 +88,42 @@ export const postMockTranslations = [
         'date': new Date('January 03 2021 13:34')
     }
 ];
+
+export const mockUser = {
+        'name': 'Joshua',
+        'avatar': avatar,
+        'nativeLanguages': ['English-US'],
+        'languagesOfInterest': ['English-UK', 'Polish'],
+        'registerDate': new Date('January 01 2021 17:45')
+}
+
+export const joshuaMockRequests = [
+    {
+        'id': 0,
+        'user': {
+            'name': 'Joshua',
+            'avatar': avatar
+        },
+        'fromLanguage': 'English-US',
+        'toLanguage': 'Polish',
+        'text': 'Can I get a haircut?',
+        'context': '',
+        'contextImage': null,
+        'date': new Date('January 03 2021 12:30'),
+        'answers': []
+    },
+    {
+        'id': 1,
+        'user': {
+            'name': 'Joshua',
+            'avatar': avatar
+        },
+        'fromLanguage': 'Polish',
+        'toLanguage': 'English-US',
+        'text': 'Rondel',
+        'context': '',
+        'contextImage': null,
+        'date': new Date('January 04 2021 12:30'),
+        'answers': []
+    }
+];

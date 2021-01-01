@@ -51,9 +51,9 @@ const FilterBar = ({ filterState, setHidden, setRequestId }) => {
     );
 }
 
-export const User = ({ avatar, name }) => {
+export const User = ({ name, avatar, className }) => {
     return (
-        <div className='user'>
+        <div className={`user ${className}`}>
             <img className='avatar' src={avatar} /> {name}
         </div>
     );
