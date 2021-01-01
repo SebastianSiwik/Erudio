@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Home } from './components/Home';
 import { Feed } from './components/Feed';
 import { Post } from './components/Post';
+import { Profile } from './components/Profile';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
@@ -19,6 +20,7 @@ export default class App extends Component {
         <Route exact path='/' component={Home} />
         <Route path='/feed' component={Feed} />
         <Route path='/post' component={Post} />
+        <Route path='/profile' component={Profile} />
         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
       </Layout>
     );
