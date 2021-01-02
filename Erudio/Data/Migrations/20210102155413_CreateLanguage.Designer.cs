@@ -4,14 +4,16 @@ using Erudio.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Erudio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210102155413_CreateLanguage")]
+    partial class CreateLanguage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,134 +103,14 @@ namespace Erudio.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("LanguageCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LanguageName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LanguageId");
 
-                    b.HasIndex("LanguageCode")
-                        .IsUnique();
-
                     b.ToTable("Languages");
-                });
-
-            modelBuilder.Entity("Erudio.Models.Request", b =>
-                {
-                    b.Property<int>("RequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Context")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("ContextImage")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FromLanguageCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ToLanguageCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("RequestId");
-
-                    b.HasIndex("AuthorId");
-
-                    b.ToTable("Requests");
-                });
-
-            modelBuilder.Entity("Erudio.Models.RequestBookmark", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RequestId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RequestId");
-
-                    b.HasIndex("RequestId");
-
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("RequestBookmarks");
-                });
-
-            modelBuilder.Entity("Erudio.Models.Translation", b =>
-                {
-                    b.Property<int>("TranslationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Explanation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("ExplanationImage")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<int>("RequestId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("TranslationId");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("RequestId");
-
-                    b.ToTable("Translations");
-                });
-
-            modelBuilder.Entity("Erudio.Models.TranslationLike", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TranslationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "TranslationId");
-
-                    b.HasIndex("TranslationId");
-
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("TranslationLikes");
                 });
 
             modelBuilder.Entity("Erudio.Models.UserLanguageOfInterest", b =>
@@ -243,7 +125,6 @@ namespace Erudio.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId1")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId", "LanugageId");
@@ -267,7 +148,6 @@ namespace Erudio.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId1")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId", "LanugageId");
@@ -496,56 +376,6 @@ namespace Erudio.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Erudio.Models.Request", b =>
-                {
-                    b.HasOne("Erudio.Models.ApplicationUser", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Erudio.Models.RequestBookmark", b =>
-                {
-                    b.HasOne("Erudio.Models.Request", "Request")
-                        .WithMany("RequestBookmarks")
-                        .HasForeignKey("RequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Erudio.Models.ApplicationUser", "User")
-                        .WithMany("RequestBookmarks")
-                        .HasForeignKey("UserId1");
-                });
-
-            modelBuilder.Entity("Erudio.Models.Translation", b =>
-                {
-                    b.HasOne("Erudio.Models.ApplicationUser", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Erudio.Models.Request", "Request")
-                        .WithMany("Translations")
-                        .HasForeignKey("RequestId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Erudio.Models.TranslationLike", b =>
-                {
-                    b.HasOne("Erudio.Models.Translation", "Translation")
-                        .WithMany("TranslationLikes")
-                        .HasForeignKey("TranslationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Erudio.Models.ApplicationUser", "User")
-                        .WithMany("TranslationLikes")
-                        .HasForeignKey("UserId1");
-                });
-
             modelBuilder.Entity("Erudio.Models.UserLanguageOfInterest", b =>
                 {
                     b.HasOne("Erudio.Models.Language", "Language")
@@ -554,9 +384,7 @@ namespace Erudio.Data.Migrations
 
                     b.HasOne("Erudio.Models.ApplicationUser", "User")
                         .WithMany("LanguagesOfInterest")
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Erudio.Models.UserNativeLanguage", b =>
@@ -567,9 +395,7 @@ namespace Erudio.Data.Migrations
 
                     b.HasOne("Erudio.Models.ApplicationUser", "User")
                         .WithMany("NativeLanguages")
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

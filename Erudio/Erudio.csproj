@@ -27,6 +27,17 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20210102144746_ApplicationUser, Language.cs" />
+    <Compile Remove="Data\Migrations\20210102144746_ApplicationUser, Language.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210102154926_ApplicationUser, Language.cs" />
+    <Compile Remove="Data\Migrations\20210102154926_ApplicationUser, Language.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210102165005_CreateRequestAndTranslation.cs" />
+    <Compile Remove="Data\Migrations\20210102165005_CreateRequestAndTranslation.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210102171813_CreateRequestAndTranslation.cs" />
+    <Compile Remove="Data\Migrations\20210102171813_CreateRequestAndTranslation.Designer.cs" />
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
