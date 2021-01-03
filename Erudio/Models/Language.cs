@@ -12,8 +12,5 @@ namespace Erudio.Models
         public string LanguageCode { get; set; }
         [Required]
         public string LanguageName { get; set; }
-
-        public virtual ICollection<UserNativeLanguage> NativeLanguages { get; set; }
-        public virtual ICollection<UserLanguageOfInterest> LanguagesOfInterest { get; set; }
     }
 }

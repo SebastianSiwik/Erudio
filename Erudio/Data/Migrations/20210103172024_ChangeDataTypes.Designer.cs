@@ -4,14 +4,16 @@ using Erudio.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Erudio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210103172024_ChangeDataTypes")]
+    partial class ChangeDataTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,21 +155,6 @@ namespace Erudio.Data.Migrations
                     b.ToTable("Requests");
                 });
 
-            modelBuilder.Entity("Erudio.Models.RequestBookmark", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("RequestId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "RequestId");
-
-                    b.HasIndex("RequestId");
-
-                    b.ToTable("RequestBookmarks");
-                });
-
             modelBuilder.Entity("Erudio.Models.Translation", b =>
                 {
                     b.Property<int>("TranslationId")
@@ -200,21 +187,6 @@ namespace Erudio.Data.Migrations
                     b.HasIndex("RequestId");
 
                     b.ToTable("Translations");
-                });
-
-            modelBuilder.Entity("Erudio.Models.TranslationLike", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("TranslationId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "TranslationId");
-
-                    b.HasIndex("TranslationId");
-
-                    b.ToTable("TranslationLikes");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
@@ -434,41 +406,11 @@ namespace Erudio.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Erudio.Models.RequestBookmark", b =>
-                {
-                    b.HasOne("Erudio.Models.Request", "Request")
-                        .WithMany("RequestBookmarks")
-                        .HasForeignKey("RequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Erudio.Models.ApplicationUser", "User")
-                        .WithMany("RequestBookmarks")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Erudio.Models.Translation", b =>
                 {
                     b.HasOne("Erudio.Models.Request", null)
                         .WithMany("Translations")
                         .HasForeignKey("RequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Erudio.Models.TranslationLike", b =>
-                {
-                    b.HasOne("Erudio.Models.Translation", "Translation")
-                        .WithMany("TranslationLikes")
-                        .HasForeignKey("TranslationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Erudio.Models.ApplicationUser", "User")
-                        .WithMany("TranslationLikes")
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

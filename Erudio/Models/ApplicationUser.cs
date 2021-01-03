@@ -15,8 +15,6 @@ namespace Erudio.Models
         public DateTime RegistrationDate { get; set; }
         public byte[] ProfilePicture { get; set; }
 
-        public virtual ICollection<UserNativeLanguage> NativeLanguages { get; set; }
-        public virtual ICollection<UserLanguageOfInterest> LanguagesOfInterest { get; set; }
         public virtual ICollection<TranslationLike> TranslationLikes { get; set; }
         public virtual ICollection<RequestBookmark> RequestBookmarks { get; set; }
     }

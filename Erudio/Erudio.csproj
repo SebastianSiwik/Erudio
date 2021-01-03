@@ -37,6 +37,10 @@
     <Compile Remove="Data\Migrations\20210102165005_CreateRequestAndTranslation.Designer.cs" />
     <Compile Remove="Data\Migrations\20210102171813_CreateRequestAndTranslation.cs" />
     <Compile Remove="Data\Migrations\20210102171813_CreateRequestAndTranslation.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210103171155_ChangeDataTypes.cs" />
+    <Compile Remove="Data\Migrations\20210103171155_ChangeDataTypes.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210103171509_ChangeDataTypes.cs" />
+    <Compile Remove="Data\Migrations\20210103171509_ChangeDataTypes.Designer.cs" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

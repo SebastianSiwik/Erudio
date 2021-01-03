@@ -101,16 +101,6 @@ namespace Erudio.Controllers
             {
                 _context.RemoveRange(bookmarks);
             }
-            var nativeLanguages = _context.UserNativeLanguages.Where(x => x.UserId == userId);
-            if (nativeLanguages != null)
-            {
-                _context.RemoveRange(nativeLanguages);
-            }
-            var languagesOfInterest = _context.UserLanguagesOfInterest.Where(x => x.UserId == userId);
-            if (languagesOfInterest != null)
-            {
-                _context.RemoveRange(languagesOfInterest);
-            }
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
             if (user != null)
