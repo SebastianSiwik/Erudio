@@ -26,11 +26,6 @@ namespace Erudio.Data
             modelBuilder.Entity<UserLanguageOfInterest>().HasKey(uloi => new { uloi.UserId, uloi.LanugageId });
             modelBuilder.Entity<RequestBookmark>().HasKey(rb => new { rb.UserId, rb.RequestId });
             modelBuilder.Entity<TranslationLike>().HasKey(tl => new { tl.UserId, tl.TranslationId });
-
-            modelBuilder.Entity<Translation>()
-                .HasOne(t => t.Request)
-                .WithMany(r => r.Translations)
-                .OnDelete(DeleteBehavior.Restrict);
         }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Request> Requests { get; set; }
