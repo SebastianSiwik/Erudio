@@ -143,6 +143,12 @@ namespace Erudio.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteRequest(int requestId)
         {
+            var translations = _context.Translations.Where(x => x.RequestId == requestId);
+            if (translations != null)
+            {
+                _context.RemoveRange(translations);
+            }
+
             var request = await _context.Requests.FirstOrDefaultAsync(x => x.RequestId == requestId);
             if (request != null)
             {

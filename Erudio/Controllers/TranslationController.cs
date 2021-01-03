@@ -6,6 +6,7 @@ using Erudio.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Erudio.Controllers
@@ -109,6 +110,12 @@ namespace Erudio.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteTranslation(int translationId)
         {
+            var likes = _context.TranslationLikes.Where(x => x.TranslationId == translationId);
+            if (likes != null)
+            {
+                _context.RemoveRange(likes);
+            }
+
             var translation = await _context.Translations.FirstOrDefaultAsync(x => x.TranslationId == translationId);
             if (translation != null)
             {

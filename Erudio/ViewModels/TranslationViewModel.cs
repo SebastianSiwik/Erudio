@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Erudio.Models;
+using System;
 
 namespace Erudio.ViewModels
 {

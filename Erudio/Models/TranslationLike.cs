@@ -8,7 +8,7 @@ namespace Erudio.Models
 {
     public class TranslationLike
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
         [Required]

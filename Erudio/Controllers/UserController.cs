@@ -4,6 +4,7 @@ using Erudio.Validation;
 using Erudio.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Erudio.Controllers
@@ -88,6 +89,29 @@ namespace Erudio.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteUser(string userId)
         {
+            await _context.Requests.Where(x => x.AuthorId == userId)
+                .ForEachAsync(x => x.AuthorId = "0");
+            await _context.Translations.Where(x => x.AuthorId == userId)
+                .ForEachAsync(x => x.AuthorId = "0");
+            await _context.TranslationLikes.Where(x => x.UserId == userId)
+                .ForEachAsync(x => x.UserId = "0");
+
+            var bookmarks = _context.RequestBookmarks.Where(x => x.UserId == userId);
+            if (bookmarks != null)
+            {
+                _context.RemoveRange(bookmarks);
+            }
+            var nativeLanguages = _context.UserNativeLanguages.Where(x => x.UserId == userId);
+            if (nativeLanguages != null)
+            {
+                _context.RemoveRange(nativeLanguages);
+            }
+            var languagesOfInterest = _context.UserLanguagesOfInterest.Where(x => x.UserId == userId);
+            if (languagesOfInterest != null)
+            {
+                _context.RemoveRange(languagesOfInterest);
+            }
+
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
             if (user != null)
             {

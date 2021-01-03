@@ -9,7 +9,7 @@ namespace Erudio.Models
     public class UserNativeLanguage
     {
         [Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         [Required]
         public ApplicationUser User { get; set; }
 
