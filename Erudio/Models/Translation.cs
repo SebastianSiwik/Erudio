@@ -6,6 +6,11 @@ namespace Erudio.Models
 {
     public class Translation
     {
+        public Translation()
+        {
+            TranslationLikes = new List<TranslationLike>();
+        }
+
         [Key]
         [Required]
         public int TranslationId { get; set; }

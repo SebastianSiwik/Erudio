@@ -8,6 +8,12 @@ namespace Erudio.Models
 {
     public class Request
     {
+        public Request()
+        {
+            Translations = new List<Translation>();
+            RequestBookmarks = new List<RequestBookmark>();
+        }
+
         [Key]
         [Required]
         public int RequestId { get; set; }

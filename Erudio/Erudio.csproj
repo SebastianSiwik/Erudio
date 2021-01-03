@@ -41,6 +41,8 @@
     <Compile Remove="Data\Migrations\20210103171155_ChangeDataTypes.Designer.cs" />
     <Compile Remove="Data\Migrations\20210103171509_ChangeDataTypes.cs" />
     <Compile Remove="Data\Migrations\20210103171509_ChangeDataTypes.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210103175440_AddNativeLanguagesAndLanugagesOfInterest.cs" />
+    <Compile Remove="Data\Migrations\20210103175440_AddNativeLanguagesAndLanugagesOfInterest.Designer.cs" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
