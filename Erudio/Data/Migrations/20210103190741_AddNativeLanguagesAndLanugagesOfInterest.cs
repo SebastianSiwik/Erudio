@@ -10,14 +10,15 @@ namespace Erudio.Data.Migrations
                 name: "LanguagesOfInterest",
                 columns: table => new
                 {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(nullable: false),
-                    Id = table.Column<int>(nullable: false),
                     LanguageCode = table.Column<string>(nullable: false),
                     ApplicationUserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LanguagesOfInterest", x => x.UserId);
+                    table.PrimaryKey("PK_LanguagesOfInterest", x => x.Id);
                     table.ForeignKey(
                         name: "FK_LanguagesOfInterest_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
@@ -30,14 +31,15 @@ namespace Erudio.Data.Migrations
                 name: "NativeLanguages",
                 columns: table => new
                 {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(nullable: false),
-                    Id = table.Column<int>(nullable: false),
                     LanguageCode = table.Column<string>(nullable: false),
                     ApplicationUserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NativeLanguages", x => x.UserId);
+                    table.PrimaryKey("PK_NativeLanguages", x => x.Id);
                     table.ForeignKey(
                         name: "FK_NativeLanguages_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,

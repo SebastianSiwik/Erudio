@@ -6,6 +6,7 @@ using Erudio.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -43,24 +44,26 @@ namespace Erudio.Controllers
             return NotFound();
         }
 
-        [Route("request/{requestId:min(1)}", Name = "GetTranslationByRequestId")]
+        [Route("request/{requestId:min(1)}", Name = "GetTranslationsByRequestId")]
         [HttpGet]
-        public async Task<IActionResult> GetTranslationByRequestId(int requestId)
+        public async Task<IActionResult> GetTranslationsByRequestId(int requestId)
         {
-            var translation = await _context.Translations.FirstOrDefaultAsync(x => x.RequestId == requestId);
-
-            if (translation != null)
-            {
-                return Ok(new TranslationViewModel
+            var translations = new List<TranslationViewModel>(); 
+            await _context.Translations.Where(x => x.RequestId == requestId)
+                .ForEachAsync(t => translations.Add(new TranslationViewModel 
                 {
-                    TranslationId = translation.TranslationId,
-                    RequestId = translation.RequestId,
-                    AuthorId = translation.AuthorId,
-                    Text = translation.Text,
-                    Explanation = translation.Explanation,
-                    ExplanationImage = translation.ExplanationImage,
-                    Date = translation.Date
-                });
+                    TranslationId = t.TranslationId,
+                    RequestId = t.RequestId,
+                    AuthorId = t.AuthorId,
+                    Text = t.Text,
+                    Explanation = t.Explanation,
+                    ExplanationImage = t.ExplanationImage,
+                    Date = t.Date
+                }));
+
+            if (translations != null)
+            {
+                return Ok(translations);
             }
             return NotFound();
         }
