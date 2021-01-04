@@ -9,7 +9,7 @@ textarea {
 .row-container {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
 }
 
 .text-right {
@@ -67,6 +67,7 @@ Form {
 .image {
     width: 40px;
     height: auto;
+    cursor: pointer;
 }
 
 h1 {

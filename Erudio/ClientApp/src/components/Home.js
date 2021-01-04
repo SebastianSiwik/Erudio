@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import API from '../Api';
+import authService from './api-authorization/AuthorizeService';
+import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form } from 'formik';
 import bubbles from '../images/bubbles.png';
 import swap from '../images/swap.svg';
@@ -6,11 +8,11 @@ import image from '../images/image.svg';
 import '../App.css';
 import './Home.css';
 
-function BackgroundImage(props) {
+const BackgroundImage = () => {
     return <img className='background right-side' src={bubbles} />;
 }
 
-function HeaderText(props) {
+const HeaderText = () => {
     return (
         <div>
             <h1>Have words translated <strong>right</strong></h1>
@@ -19,45 +21,138 @@ function HeaderText(props) {
         </div>
     );
 }
- 
-function TranslationRequestForm(props) {
+
+const TranslationRequestForm = (props) => {
+    const [languages, setLanguages] = useState([]);
+    const [fromTo, setFromTo] = useState({ 'from': 'Polish', 'to': 'English-UK' });
+
+    useEffect(() => {
+        API.get('languages').then(res => {
+            setLanguages(res.data);
+        });
+    }, [languages]);
+
+    const handleSubmit = async (values) => {
+        values.authorId = props.userId;
+        values.fromLanguageCode = fromTo.from;
+        values.toLanguageCode = fromTo.to;
+        alert(JSON.stringify(values));
+
+        const response = await API.post('request', values);
+
+        console.log(response);
+        console.log(response.data);
+    }
+
+    const handleClick = () => {
+        const newFromTo = { 'from': fromTo.to, 'to': fromTo.from };
+        setFromTo(newFromTo);
+    }
+    const handleChangeFrom = (event) => {
+        const choices = fromTo;
+        choices.from = event.target.value;
+        if (choices.from === choices.to) {
+            const found = languages.find(language =>
+                language.languageCode !== choices.from);
+            choices.to = found.languageCode;
+        }
+        setFromTo(choices);
+    }
+
+    const handleChangeTo = (event) => {
+        const choices = fromTo;
+        choices.to = event.target.value;
+        if (choices.from === choices.to) {
+            const found = languages.find(language =>
+                language.languageCode !== choices.to);
+            choices.from = found.languageCode;
+        }
+        setFromTo(choices);
+    }
+
+    const validateText = (value) => {
+        let error;
+        if (!value) {
+            error = 'Text to translate required.';
+        }
+        return error;
+    }
+
     return (
         <Formik
-            initialValues={{ from: 'English', to: 'Polish', textToTranslate: '', context: '' }}
-            onSubmit={async values => {
-            await new Promise(resolve => setTimeout(resolve, 500));
-            alert(JSON.stringify(values, null, 2));
-            }}
+            initialValues={{ fromLanguageCode: '', toLanguageCode: '', text: '', context: '' }}
+            onSubmit={values => handleSubmit(values)}
         >
-            <Form>
-                <div className='row-container'>
-                    <Field className='text-box small-box' name='from' placeholder='From' />
-                    <img src={swap} />
-                    <Field className='text-box small-box' name='to' placeholder='To' />
-                </div>
-                <Field className='text-box big-box' as='textarea' name='textToTranslate' placeholder='Get started!' />
-                <div className='row-container'>
-                    <Field className='text-box small-box' name='context' placeholder='Context' />
-                    <img className='image' src={image} />
-                </div>
-                <button type='submit'>Translate</button>
-            </Form>
+            {({ errors }) => (
+                <Form>
+                    <div className='row-container'>
+                        <Field value={fromTo.from}
+                            as='select'
+                            className='text-box small-box'
+                            name='fromLanguageCode'
+                            placeholder='From'
+                            onChange={handleChangeFrom}>
+                            {languages.map(language => (
+                                <option key={language.languageCode} value={language.languageCode}>{language.languageName}</option>
+                            ))}
+                        </Field>
+                        <img className='image' src={swap} onClick={handleClick} />
+                        <Field value={fromTo.to}
+                            as='select'
+                            className='text-box small-box'
+                            name='toLanguageCode'
+                            placeholder='To'
+                            onChange={handleChangeTo}>
+                            {languages.map(language => (
+                                <option key={language.languageCode} value={language.languageCode}>{language.languageName}</option>
+                            ))}
+                        </Field>
+                    </div>
+                    <Field className='text-box big-box'
+                        as='textarea'
+                        name='text'
+                        placeholder='Get started!'
+                        validate={validateText} />
+                    <div className='row-container'>
+                        <Field className='text-box small-box' name='context' placeholder='Context' />
+                        <img className='image' src={image} />
+                    </div>
+                    <div className='row-container'>
+                        <div>{errors.text && errors.text}</div>
+                        <button type='submit'>Translate</button>
+                    </div>
+                </Form>
+            )}
         </Formik>
     );
 }
 
-export class Home extends Component {
-  static displayName = Home.name;
+export const Home = () => {
+    const [isAuthenticated, setAuthenticated] = useState(false);
+    const [userId, setUserId] = useState(null);
 
-  render () {
+    useEffect(() => {
+        const _subscription = authService.subscribe(() => this.populateState());
+        populateState();
+
+        return () => {
+            authService.unsubscribe(_subscription);
+        }
+    });
+
+    const populateState = async () => {
+        const [isAuthenticated, user] = await Promise.all([authService.isAuthenticated(), authService.getUser()]);
+        setAuthenticated(isAuthenticated);
+        setUserId(user && user.sub);
+    }
+
     return (
-      <div className='row-container'>
-        <div className='left-side'>
-            <HeaderText />
-            <TranslationRequestForm />
+        <div className='row-container'>
+            <div className='left-side'>
+                <HeaderText />
+                <TranslationRequestForm isAuthenticated={isAuthenticated} userId={userId} />
+            </div>
+            <BackgroundImage />
         </div>
-        <BackgroundImage />
-      </div>
     );
-  }
 }
