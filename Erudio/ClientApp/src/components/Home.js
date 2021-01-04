@@ -1,5 +1,6 @@
 import API from '../Api';
 import authService from './api-authorization/AuthorizeService';
+import { Redirect } from 'react-router-dom'
 import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form } from 'formik';
 import bubbles from '../images/bubbles.png';
@@ -23,25 +24,40 @@ const HeaderText = () => {
 }
 
 const TranslationRequestForm = (props) => {
+    const [shouldRedirect, setRedirect] = useState(false);
     const [languages, setLanguages] = useState([]);
     const [fromTo, setFromTo] = useState({ 'from': 'Polish', 'to': 'English-UK' });
 
+    let isActive = true;
+
     useEffect(() => {
         API.get('languages').then(res => {
-            setLanguages(res.data);
+            if (isActive) {
+                setLanguages(res.data);
+            }
         });
+        return () => {
+            isActive = false;
+        }
     }, [languages]);
 
     const handleSubmit = async (values) => {
-        values.authorId = props.userId;
-        values.fromLanguageCode = fromTo.from;
-        values.toLanguageCode = fromTo.to;
-        alert(JSON.stringify(values));
+        if (!props.isAuthenticated) {
+            setRedirect(true);
+        }
+        else {
+            values.authorId = props.userId;
+            values.fromLanguageCode = fromTo.from;
+            values.toLanguageCode = fromTo.to;
+            alert(JSON.stringify(values));
 
-        const response = await API.post('request', values);
+            const response = await API.post('request', values);
 
-        console.log(response);
-        console.log(response.data);
+            console.log(response);
+            console.log(response.data);
+
+            setRedirect(true);
+        }
     }
 
     const handleClick = () => {
@@ -76,6 +92,14 @@ const TranslationRequestForm = (props) => {
             error = 'Text to translate required.';
         }
         return error;
+    }
+
+    const formRedirect = () => {
+        if (shouldRedirect) {
+            return <div>
+                {props.isAuthenticated ? <Redirect to='/feed' /> : <Redirect to='/authorize' />}
+            </div>
+        }
     }
 
     return (
@@ -121,6 +145,7 @@ const TranslationRequestForm = (props) => {
                         <div>{errors.text && errors.text}</div>
                         <button type='submit'>Translate</button>
                     </div>
+                    {formRedirect()}
                 </Form>
             )}
         </Formik>
