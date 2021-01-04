@@ -1,7 +1,8 @@
-import React, { Component, useState } from 'react';
+import API from '../Api';
+import React, { Component, useState, useEffect } from 'react';
 import '../App.css';
 import './Feed.css';
-import { feedMockRequests } from './Mock.js'
+import avatar from '../images/avatar.png';
 import flagPoland from '../images/flag_poland.png';
 import flagUK from '../images/flag_uk.png';
 import flagUS from '../images/flag_us.png';
@@ -51,10 +52,27 @@ const FilterBar = ({ filterState, setHidden, setRequestId }) => {
     );
 }
 
-export const User = ({ name, avatar, className }) => {
+export const User = ({ userId, className }) => {
+
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        API.get(`user/${userId}`).then(res => {
+            setUser(res.data);
+        });
+    }, []);
+
+
+    const getAvatar = () => {
+        console.log(user);
+        return user.profilePicture !== null ?
+            user.profilePicture :
+            avatar;
+    }
+
     return (
         <div className={`user ${className}`}>
-            <img className='avatar' src={avatar} /> {name}
+            <img className='avatar' src={getAvatar()} /> {user.userName}
         </div>
     );
 }
@@ -89,12 +107,26 @@ export class LanguageFromTo extends Component {
 const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
     const [requestId, setRequestId] = requestIdState;
     const [detailHidden, setHidden] = detailHiddenState;
+    const [requests, setRequests] = useState([]);
+
+    let isActive = true;
+
+    useEffect(() => {
+        API.get('request').then(res => {
+            if (isActive) {
+                setRequests(res.data);
+            }
+        });
+        return () => {
+            isActive = false;
+        }
+    }, [requests]);
 
     const handleClick = (requestId) => {
         setRequestId(requestId);
     };
 
-    const filterResult = feedMockRequests.filter(request => {
+    const filterResult = requests.filter(request => {
         return request.id === requestId;
     });
     const selectedRequest = filterResult[0];
@@ -103,7 +135,7 @@ const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
 
     return (
         <div className='page'>
-            <RequestList requests={feedMockRequests} selectedRequestId={requestId} onClick={handleClick} filter={filter} />
+            <RequestList requests={requests} selectedRequestId={requestId} onClick={handleClick} filter={filter} />
             <DetailedRequest hidden={detailHidden} {...selectedRequest} />
         </div>
     );
@@ -113,8 +145,8 @@ const RequestList = (props) => {
     let filteredRequests;
     if (props.filter.caption !== 'All') {
         filteredRequests = props.requests.filter(request =>
-            request.fromLanguage === props.filter.from
-            && request.toLanguage === props.filter.to);
+            request.fromLanguageCode === props.filter.from
+            && request.toLanguageCode === props.filter.to);
     } else {
         filteredRequests = props.requests;
     }
@@ -123,32 +155,31 @@ const RequestList = (props) => {
         <div className='request-list'>
             {filteredRequests.map(request => (
                 <Request {...request}
-                    key={request.id}
+                    key={request.requestId}
                     onClick={props.onClick}
-                    highlighted={props.selectedRequestId === request.id} />
+                    highlighted={props.selectedRequestId === request.authorId} />
             ))}
         </div>
     );
 }
 
-export class Request extends Component {
-    render() {
-        const handleClick = this.props.onClick;
+export const Request = (props) => {
+    const handleClick = props.onClick;
 
-        return (
-            <div className={`request ${this.props.highlighted ? 'request-clicked' : ''}`}
-                onClick={() => handleClick(this.props.id)}>
+    return (
+        <div className={`request ${props.highlighted ? 'request-clicked' : ''}`}
+            onClick={() => handleClick(props.id)}>
 
-                <LanguageFromTo from={this.props.fromLanguage} to={this.props.toLanguage} />
-                <div className='user'>
-                    <User {...this.props.user} />
-                </div>
-                <div className='requested-text'>
-                    {this.props.text}
-                </div>
+            <LanguageFromTo from={props.fromLanguageCode} to={props.toLanguageCode} />
+            <div className='user'>
+                <User userId={props.authorId} />
             </div>
-        );
-    }
+            <div className='requested-text'>
+                {props.text}
+            </div>
+        </div>
+    );
+
 }
 
 export class DetailedRequest extends Component {
