@@ -45,9 +45,16 @@
     flex-direction: column;
     min-width: 50%;
     width: 50%;
-    height: fit-content;
+    height: calc(100vh - 180px);
     box-sizing: border-box;
     border-radius: 5px;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.request-list::-webkit-scrollbar {
+    display: none;
 }
 
 .request {

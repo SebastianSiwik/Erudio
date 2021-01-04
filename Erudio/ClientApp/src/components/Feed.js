@@ -1,5 +1,6 @@
 import API from '../Api';
 import React, { Component, useState, useEffect } from 'react';
+import dayjs from 'dayjs'
 import '../App.css';
 import './Feed.css';
 import avatar from '../images/avatar.png';
@@ -19,7 +20,7 @@ const FilterChoice = ({ choice, active, onClick }) => {
     );
 }
 
-const FilterBar = ({ filterState, setHidden, setRequestId }) => {
+const FilterBar = ({ filterState, setHidden, setChosenRequest }) => {
     const choices = [
         { caption: 'All', from: '', to: '' },
         { caption: 'Polish to English (UK)', from: 'Polish', to: 'English-UK' },
@@ -35,7 +36,7 @@ const FilterBar = ({ filterState, setHidden, setRequestId }) => {
     const handleClick = (choice) => {
         setFilter(choice);
         setHidden(true);
-        setRequestId(-1);
+        setChosenRequest({});
     }
 
     return (
@@ -60,11 +61,10 @@ export const User = ({ userId, className }) => {
         API.get(`user/${userId}`).then(res => {
             setUser(res.data);
         });
-    }, []);
+    }, [userId]);
 
 
     const getAvatar = () => {
-        console.log(user);
         return user.profilePicture !== null ?
             user.profilePicture :
             avatar;
@@ -104,8 +104,8 @@ export class LanguageFromTo extends Component {
     }
 }
 
-const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
-    const [requestId, setRequestId] = requestIdState;
+const RequestMasterDetail = ({ filter, detailHiddenState, chosenRequestState }) => {
+    const [chosenRequest, setChosenRequest] = chosenRequestState;
     const [detailHidden, setHidden] = detailHiddenState;
     const [requests, setRequests] = useState([]);
 
@@ -114,7 +114,7 @@ const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
     useEffect(() => {
         API.get('request').then(res => {
             if (isActive) {
-                setRequests(res.data);
+                setRequests(res.data.sort(sortByDate));
             }
         });
         return () => {
@@ -122,21 +122,26 @@ const RequestMasterDetail = ({ filter, detailHiddenState, requestIdState }) => {
         }
     }, [requests]);
 
-    const handleClick = (requestId) => {
-        setRequestId(requestId);
+    const sortByDate = (a, b) => {
+        if (a.date > b.date) return -1;
+        if (a.date < b.date) return 1;
+        return 0;
+    }
+
+    const handleClick = (request) => {
+        setChosenRequest(request);
+        setHidden(false);
     };
 
-    const filterResult = requests.filter(request => {
-        return request.id === requestId;
-    });
-    const selectedRequest = filterResult[0];
-
-    setHidden(filterResult.length === 0);
+    if (Object.keys(chosenRequest).length === 0 &&
+        chosenRequest.constructor === Object) {
+        setHidden(true);
+    }
 
     return (
         <div className='page'>
-            <RequestList requests={requests} selectedRequestId={requestId} onClick={handleClick} filter={filter} />
-            <DetailedRequest hidden={detailHidden} {...selectedRequest} />
+            <RequestList requests={requests} selectedRequestId={chosenRequest.requestId} onClick={handleClick} filter={filter} />
+            <DetailedRequest hidden={detailHidden} request={chosenRequest} />
         </div>
     );
 }
@@ -154,110 +159,104 @@ const RequestList = (props) => {
     return (
         <div className='request-list'>
             {filteredRequests.map(request => (
-                <Request {...request}
+                <Request request={request}
                     key={request.requestId}
                     onClick={props.onClick}
-                    highlighted={props.selectedRequestId === request.authorId} />
+                    highlighted={props.selectedRequestId === request.requestId} />
             ))}
         </div>
     );
 }
 
-export const Request = (props) => {
-    const handleClick = props.onClick;
+export const Request = ({ request, highlighted, onClick }) => {
+    const handleClick = onClick;
 
     return (
-        <div className={`request ${props.highlighted ? 'request-clicked' : ''}`}
-            onClick={() => handleClick(props.id)}>
+        <div className={`request ${highlighted ? 'request-clicked' : ''}`}
+            onClick={() => handleClick(request)}>
 
-            <LanguageFromTo from={props.fromLanguageCode} to={props.toLanguageCode} />
+            <LanguageFromTo from={request.fromLanguageCode} to={request.toLanguageCode} />
             <div className='user'>
-                <User userId={props.authorId} />
+                <User userId={request.authorId} />
             </div>
             <div className='requested-text'>
-                {props.text}
+                {request.text}
             </div>
         </div>
     );
 
 }
 
-export class DetailedRequest extends Component {
+export const DetailedRequest = ({ hidden, request }) => {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            sendButtonDisabled: true,
-            translation: ''
-        }
-    }
+    const relativeTime = require('dayjs/plugin/relativeTime');
+    dayjs.extend(relativeTime);
 
-    handleKeyUp(event) {
+    const [sendButtonDisabled, setSendButtonDisabled] = useState(true);
+    const [translation, setTranslation] = useState('');
+
+    const handleKeyUp = (event) => {
         if (event.target.textContent.trim() !== '') {
-            this.setState({
-                sendButtonDisabled: false,
-                translation: event.target.textContent.trim()
-            });
+            setSendButtonDisabled(false);
+            setTranslation(event.target.textContent.trim());
         }
         else if (event.target.textContent.trim() === '') {
-            this.setState({
-                sendButtonDisabled: true,
-                translation: ''
-            });
+            setSendButtonDisabled(true);
+            setTranslation('');
         }
     }
 
-    handleClick() {
-        if (this.state.sendButtonDisabled === false) {
-            const translation = { 'translation': this.state.translation };
-            return <form onSubmit={alert(JSON.stringify(translation))} />;
+    const handleClick = () => {
+        if (sendButtonDisabled === false) {
+            const object = { 'translation': translation };
+            return <form onSubmit={alert(JSON.stringify(object))} />;
         }
     }
 
-    render() {
-        if (this.props.hidden) {
-            return <div></div>;
-        }
+    if (hidden) {
+        return <div></div>;
+    }
 
-        return (
-            <div className='detailed-request'>
-                <div className='row'>
-                    <User {...this.props.user} />
-                    <LanguageFromTo from={this.props.fromLanguage} to={this.props.toLanguage} />
-                </div>
-                <div className='date'>{this.props.date.toLocaleDateString()}</div>
-                <div className='requested-text-detailed'>{this.props.text}</div>
-                <div className='context'>{this.props.context === '' ? '' : 'Context: ' + this.props.context}</div>
-                <img className='context-image' src={this.props.contextImage} />
-                <div className='translation'>
-                    <span className='translation-textbox'
-                        role='textbox'
-                        placeholder='Translate...'
-                        onKeyUp={event => this.handleKeyUp(event)}
-                        contentEditable />
-                    <img className='send' src={this.state.sendButtonDisabled ? sendDisabled : send} onClick={() => this.handleClick()} />
-                </div>
+    return (
+        <div className='detailed-request'>
+            <div className='row'>
+                <User userId={request.authorId} />
+                <LanguageFromTo from={request.fromLanguageCode} to={request.toLanguageCode} />
             </div>
-        );
-    }
+            <div className='date'>{dayjs(request.date).fromNow()}</div>
+            <div className='requested-text-detailed'>{request.text}</div>
+            <div className='context'>
+                {request.context === '' || request.context === null ? '' : 'Context: ' + request.context}
+            </div>
+            <img className='context-image' src={request.contextImage} />
+            <div className='translation'>
+                <span className='translation-textbox'
+                    role='textbox'
+                    placeholder='Translate...'
+                    onKeyUp={event => handleKeyUp(event)}
+                    contentEditable />
+                <img className='send' src={sendButtonDisabled ? sendDisabled : send} onClick={handleClick} />
+            </div>
+        </div>
+    );
 }
 
 export const Feed = () => {
     const initialFilterState = { caption: 'All', from: '', to: '' };
     const filterState = useState(initialFilterState);
     const detailHiddenState = useState(true);
-    const requestIdState = React.useState(-1);
+    const chosenRequestState = React.useState({});
 
     return (
         <div>
             <FilterBar
                 filterState={filterState}
                 setHidden={detailHiddenState[1]}
-                setRequestId={requestIdState[1]} />
+                setChosenRequest={chosenRequestState[1]} />
             <RequestMasterDetail
                 filter={filterState[0]}
                 detailHiddenState={detailHiddenState}
-                requestIdState={requestIdState} />
+                chosenRequestState={chosenRequestState} />
         </div>
     );
 }
