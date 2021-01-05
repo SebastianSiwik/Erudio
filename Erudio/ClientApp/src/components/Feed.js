@@ -1,6 +1,6 @@
 import API from '../Api';
 import authService from './api-authorization/AuthorizeService';
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import React, { Component, useState, useEffect } from 'react';
 import dayjs from 'dayjs'
 import '../App.css';
@@ -262,7 +262,9 @@ export const DetailedRequest = ({ hidden, request }) => {
                 <User userId={request.authorId} />
                 <LanguageFromTo from={request.fromLanguageCode} to={request.toLanguageCode} />
             </div>
-            <div className='date'>{dayjs(request.date, { 'utc': true }).fromNow()}</div>
+            <Link to={`/post/${request.requestId}`}>
+                <div className='date'>{dayjs(request.date, { 'utc': true }).fromNow()}</div>
+            </Link>
             <div className='requested-text-detailed'>{request.text}</div>
             <div className='context'>
                 {request.context === '' || request.context === null ? '' : 'Context: ' + request.context}
