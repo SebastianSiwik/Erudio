@@ -58,7 +58,7 @@ const FilterBar = ({ filterState, setHidden, setChosenRequest }) => {
 export const User = ({ userId, className }) => {
 
     const [user, setUser] = useState({});
-    
+
     useEffect(() => {
         API.get(`user/${userId}`).then(res => {
             setUser(res.data);
@@ -202,7 +202,7 @@ export const DetailedRequest = ({ hidden, request }) => {
     const [translation, setTranslation] = useState('');
 
     useEffect(() => {
-        
+
         const _subscription = authService.subscribe(() => this.populateState());
         populateState();
 
@@ -239,7 +239,7 @@ export const DetailedRequest = ({ hidden, request }) => {
                 'authorId': userId,
                 'text': translation
             };
-            //API.post('translation', object);
+            API.post('translation', object);
             setRedirect(true);
         }
     }
@@ -247,7 +247,7 @@ export const DetailedRequest = ({ hidden, request }) => {
     const formRedirect = () => {
         if (shouldRedirect) {
             return <div>
-                {isAuthenticated ? <Redirect to='/post' /> : <Redirect to='/authorizeFeed' />}
+                {isAuthenticated ? <Redirect to={`/post/${request.requestId}`} /> : <Redirect to='/authorizeFeed' />}
             </div>
         }
     }
@@ -262,7 +262,7 @@ export const DetailedRequest = ({ hidden, request }) => {
                 <User userId={request.authorId} />
                 <LanguageFromTo from={request.fromLanguageCode} to={request.toLanguageCode} />
             </div>
-            <div className='date'>{dayjs(request.date).fromNow()}</div>
+            <div className='date'>{dayjs(request.date, { 'utc': true }).fromNow()}</div>
             <div className='requested-text-detailed'>{request.text}</div>
             <div className='context'>
                 {request.context === '' || request.context === null ? '' : 'Context: ' + request.context}

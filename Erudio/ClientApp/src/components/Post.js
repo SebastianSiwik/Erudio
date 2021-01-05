@@ -1,7 +1,12 @@
-import React, { Component, useState } from 'react';
+import API from '../Api';
+import authService from './api-authorization/AuthorizeService';
+import { Redirect } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import '../App.css';
 import './Post.css';
-import { postMockRequest, postMockTranslations } from './Mock.js'
 import { LanguageFromTo } from './Feed';
 import { User } from './Feed';
 import { ReportPopup } from './ReportPopup'
@@ -44,11 +49,14 @@ const Bookmark = () => {
 }
 
 const Translation = (props) => {
+    dayjs.extend(relativeTime);
+    dayjs.extend(utc);
+
     return (
         <div className='translation'>
             <div>
-                <User {...props.user} />
-                <div className='date'>{props.date.toLocaleDateString()}</div>
+                <User userId={props.authorId} />
+                <div className='date'>{dayjs(props.date, { 'utc': true }).fromNow()}</div>
                 <div className='translated-text'>{props.text}</div>
                 <div className='context'>{props.explanation}</div>
                 <img className='context-image' src={props.explanationImage} />
@@ -61,91 +69,145 @@ const Translation = (props) => {
     );
 }
 
-const TranslationList = ({ translations, setPopup }) => {
+const TranslationList = ({ requestId, setPopup }) => {
+
+    const [translations, setTranslations] = useState([]);
+
+    let active = true;
+
+    const getTranslations = async () => {
+        if (active) {
+            const response = await API.get(`translation/request/${requestId}`);
+            setTranslations(response.data);
+        }
+    }
+
+    useEffect(() => {
+        getTranslations();
+        return () => {
+            active = false
+        };
+    }, [translations]);
+
     return (
         <div className='translations'>
             <h1>Translations</h1>
             <div>
                 {translations.map(translation => (
-                    <Translation {...translation} key={translation.id} setPopup={setPopup} />
+                    <Translation {...translation} key={translation.translationId} setPopup={setPopup} />
                 ))}
             </div>
         </div>
     );
 }
 
-class Request extends Component {
+const Request = ({ requestId, setPopup, isAuthenticated, userId }) => {
+    dayjs.extend(relativeTime);
+    dayjs.extend(utc);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            sendButtonDisabled: true,
-            translation: ''
-        }
+    const [shouldRedirect, setRedirect] = useState(false);
+    const [sendButtonDisabled, setSendButtonDisabled] = useState(true);
+    const [translation, setTranslation] = useState('');
+    const [request, setRequest] = useState({});
+
+    const getRequest = async () => {
+        const result = await API.get(`request/${requestId}`);
+        setRequest(result.data);
     }
 
-    handleChange(event) {
+    useEffect(() => {
+        getRequest();
+    }, []);
+
+    const handleChange = (event) => {
         if (event.target.value.trim() !== '') {
-            this.setState({
-                sendButtonDisabled: false,
-                translation: event.target.value.trim()
-            });
+            setSendButtonDisabled(false);
+            setTranslation(event.target.value.trim());
         }
         else if (event.target.value.trim() === '') {
-            this.setState({
-                sendButtonDisabled: true,
-                translation: ''
-            });
+            setSendButtonDisabled(true);
+            setTranslation('');
         }
     }
 
-    handleClick() {
-        if (this.state.sendButtonDisabled === false) {
-            const translation = { 'translation': this.state.translation };
-            return <form onSubmit={alert(JSON.stringify(translation))} />;
+    const handleClick = async () => {
+        if (sendButtonDisabled === false) {
+            if (!isAuthenticated) {
+                setRedirect(true);
+            }
+
+            const object = {
+                'requestId': parseInt(requestId),
+                'authorId': userId,
+                'text': translation
+            };
+            await API.post('translation', object);
         }
     }
 
-    render() {
-        return (
-            <div className='post-request'>
-                <div className='row'>
-                    <User {...postMockRequest.user} />
-                    <LanguageFromTo from={postMockRequest.fromLanguage} to={postMockRequest.toLanguage} />
-                </div>
-                <div className='date'>{postMockRequest.date.toLocaleDateString()}</div>
-                <div className='post-request-row'>
-                    <div>
-                        <div className='requested-text-detailed'>{postMockRequest.text}</div>
-                        <div className='context'>{postMockRequest.context === '' ? '' : 'Context: ' + postMockRequest.context}</div>
-                        <img className='context-image' src={postMockRequest.contextImage} />
-                    </div>
-                    <div className='post-request-buttons'>
-                        <Bookmark />
-                        <Report setPopup={this.props.setPopup} />
-                    </div>
-                </div>
-                <textarea
-                    className='text-box post-textarea'
-                    placeholder='Translate...'
-                    onChange={event => this.handleChange(event)} />
-                <button className='send-button' disabled={this.state.sendButtonDisabled} onClick={() => this.handleClick()}>
-                    <div>Send</div>
-                    <img src={this.state.sendButtonDisabled ? sendDisabled : send} />
-                </button>
+    const formRedirect = () => {
+        if (shouldRedirect) {
+            return <Redirect to='/authorizeFeed/' />
+        }
+    }
+
+    return (
+        <div className='post-request'>
+            <div className='row'>
+                <User userId={request.authorId} />
+                <LanguageFromTo from={request.fromLanguageCode} to={request.toLanguageCode} />
             </div>
-        );
-    }
+            <div className='date'>{dayjs(request.date, { 'utc': true }).fromNow()}</div>
+            <div className='post-request-row'>
+                <div>
+                    <div className='requested-text-detailed'>{request.text}</div>
+                    <div className='context'>{request.context === '' ? '' : 'Context: ' + request.context}</div>
+                    <img className='context-image' src={request.contextImage} />
+                </div>
+                <div className='post-request-buttons'>
+                    <Bookmark />
+                    <Report setPopup={setPopup} />
+                </div>
+            </div>
+            <textarea
+                className='text-box post-textarea'
+                placeholder='Translate...'
+                onChange={event => handleChange(event)} />
+            <button className='send-button' disabled={sendButtonDisabled} onClick={handleClick}>
+                <div>Send</div>
+                <img src={sendButtonDisabled ? sendDisabled : send} />
+            </button>
+            {formRedirect()}
+        </div>
+    );
 }
 
-export const Post = () => {
+export const Post = ({ match }) => {
+    const [isAuthenticated, setAuthenticated] = useState(false);
+    const [userId, setUserId] = useState(null);
 
     const [popupShown, setPopup] = useState(false);
+    const requestId = match.params.requestId;
+
+    useEffect(() => {
+        const _subscription = authService.subscribe(() => this.populateState());
+        populateState();
+
+        return () => {
+            authService.unsubscribe(_subscription);
+        }
+    });
+
+    const populateState = async () => {
+        const [isAuthenticated, user] = await Promise.all([authService.isAuthenticated(), authService.getUser()]);
+        setAuthenticated(isAuthenticated);
+        setUserId(user && user.sub);
+    }
 
     return (
         <div className='post'>
-            <Request setPopup={setPopup} />
-            <TranslationList translations={postMockTranslations} setPopup={setPopup} />
+            <Request requestId={requestId} setPopup={setPopup} isAuthenticated={isAuthenticated} userId={userId} />
+            <TranslationList requestId={requestId} setPopup={setPopup} />
 
             {popupShown ?
                 <ReportPopup handleClick={setPopup} />

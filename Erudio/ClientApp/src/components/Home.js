@@ -49,12 +49,8 @@ const TranslationRequestForm = (props) => {
             values.authorId = props.userId;
             values.fromLanguageCode = fromTo.from;
             values.toLanguageCode = fromTo.to;
-            alert(JSON.stringify(values));
 
-            const response = await API.post('request', values);
-
-            console.log(response);
-            console.log(response.data);
+            await API.post('request', values);
 
             setRedirect(true);
         }

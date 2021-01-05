@@ -19,7 +19,7 @@ export default class App extends Component {
       <Layout>
         <Route exact path='/' component={Home} />
         <Route path='/feed' component={Feed} />
-        <Route path='/post' component={Post} />
+        <Route path='/post/:requestId' component={Post} />
         <Route path='/profile' component={Profile} />
         <AuthorizeRoute path='/authorize' component={Home} />
         <AuthorizeRoute path='/authorizeFeed' component={Feed} />
