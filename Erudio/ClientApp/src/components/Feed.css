@@ -181,8 +181,7 @@
 
 .translation {
     width: 100%;
-    margin-top: 20px;
-    margin-bottom: -10px;
+    margin-top: auto;
     display: flex;
     flex-direction: row;
     border-top: 1px solid rgba(0, 0, 0, 0.5);

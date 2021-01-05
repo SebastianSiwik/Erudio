@@ -1,4 +1,6 @@
 import API from '../Api';
+import authService from './api-authorization/AuthorizeService';
+import { Redirect } from 'react-router-dom'
 import React, { Component, useState, useEffect } from 'react';
 import dayjs from 'dayjs'
 import '../App.css';
@@ -56,7 +58,7 @@ const FilterBar = ({ filterState, setHidden, setChosenRequest }) => {
 export const User = ({ userId, className }) => {
 
     const [user, setUser] = useState({});
-
+    
     useEffect(() => {
         API.get(`user/${userId}`).then(res => {
             setUser(res.data);
@@ -192,8 +194,28 @@ export const DetailedRequest = ({ hidden, request }) => {
     const relativeTime = require('dayjs/plugin/relativeTime');
     dayjs.extend(relativeTime);
 
+    const [userId, setUserId] = useState(null);
+    const [isAuthenticated, setAuthenticated] = useState(false);
+    const [shouldRedirect, setRedirect] = useState(false);
+
     const [sendButtonDisabled, setSendButtonDisabled] = useState(true);
     const [translation, setTranslation] = useState('');
+
+    useEffect(() => {
+        
+        const _subscription = authService.subscribe(() => this.populateState());
+        populateState();
+
+        return () => {
+            authService.unsubscribe(_subscription);
+        }
+    }, [userId]);
+
+    const populateState = async () => {
+        const [isAuthenticated, user] = await Promise.all([authService.isAuthenticated(), authService.getUser()]);
+        setAuthenticated(isAuthenticated);
+        setUserId(user && user.sub);
+    }
 
     const handleKeyUp = (event) => {
         if (event.target.textContent.trim() !== '') {
@@ -208,8 +230,25 @@ export const DetailedRequest = ({ hidden, request }) => {
 
     const handleClick = () => {
         if (sendButtonDisabled === false) {
-            const object = { 'translation': translation };
-            return <form onSubmit={alert(JSON.stringify(object))} />;
+            if (!isAuthenticated) {
+                setRedirect(true);
+            }
+
+            const object = {
+                'requestId': request.requestId,
+                'authorId': userId,
+                'text': translation
+            };
+            //API.post('translation', object);
+            setRedirect(true);
+        }
+    }
+
+    const formRedirect = () => {
+        if (shouldRedirect) {
+            return <div>
+                {isAuthenticated ? <Redirect to='/post' /> : <Redirect to='/authorizeFeed' />}
+            </div>
         }
     }
 
@@ -237,6 +276,7 @@ export const DetailedRequest = ({ hidden, request }) => {
                     contentEditable />
                 <img className='send' src={sendButtonDisabled ? sendDisabled : send} onClick={handleClick} />
             </div>
+            {formRedirect()}
         </div>
     );
 }
