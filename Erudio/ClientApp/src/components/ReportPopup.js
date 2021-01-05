@@ -7,11 +7,11 @@ import './ReportPopup.css';
 
 const styles = createStyles({
     formControlLabel: {
-        "font-family": "Roboto",
-        "font-style": "normal",
-        "font-weight": "normal",
-        "font-size": "18px",
-        "line-height": "28px"
+        "fontFamily": "Roboto",
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+        "fontSize": "18px",
+        "lineHeight": "28px"
     }
  });
 
