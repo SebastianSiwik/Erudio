@@ -1,4 +1,4 @@
-﻿using Erudio.Models;
+﻿using System.Collections.Generic;
 using System;
 
 namespace Erudio.ViewModels
@@ -12,17 +12,7 @@ namespace Erudio.ViewModels
         public DateTime RegistrationDate { get; set; }
         public byte[] ProfilePicture { get; set; }
         
-        static public UserViewModel ToUserViewModel(ApplicationUser user)
-        {
-            return new UserViewModel
-            {
-                UserId = user.Id,
-                UserName = user.UserName,
-                Email = user.Email,
-                DateOfBirth = user.DateOfBirth,
-                RegistrationDate = user.RegistrationDate,
-                ProfilePicture = user.ProfilePicture
-            };
-        }
+        public List<RequestViewModel> PostedRequests { get; set; }
+        public List<RequestViewModel> TranslatedRequests { get; set; }
     }
 }

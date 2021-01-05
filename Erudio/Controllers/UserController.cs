@@ -1,9 +1,11 @@
 ﻿using Erudio.BindingModels;
 using Erudio.Data;
+using Erudio.Models;
 using Erudio.Validation;
 using Erudio.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,7 +24,37 @@ namespace Erudio.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserById(string userId)
         {
+            var requests = new List<RequestViewModel>();
+            var translatedRequests = new List<RequestViewModel>();
+
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            await _context.Requests.Where(x => x.AuthorId == userId)
+                    .ForEachAsync(r => requests.Add(new RequestViewModel 
+                    {
+                        RequestId = r.RequestId,
+                        AuthorId = r.AuthorId,
+                        FromLanguageCode = r.FromLanguageCode,
+                        ToLanguageCode = r.ToLanguageCode,
+                        Text = r.Text,
+                        Context = r.Context,
+                        ContextImage = r.ContextImage,
+                        Date = r.Date
+                    }));
+            
+            var requestIds = _context.Translations.Where(x => x.AuthorId == userId).ToList()
+                    .GroupBy(x => x.RequestId).Select(x => x.First()).Select(x => x.RequestId);
+            await _context.Requests.Where(x => requestIds.Contains(x.RequestId))
+                .ForEachAsync(r => translatedRequests.Add(new RequestViewModel
+                {
+                    RequestId = r.RequestId,
+                    AuthorId = r.AuthorId,
+                    FromLanguageCode = r.FromLanguageCode,
+                    ToLanguageCode = r.ToLanguageCode,
+                    Text = r.Text,
+                    Context = r.Context,
+                    ContextImage = r.ContextImage,
+                    Date = r.Date
+                }));
 
             if (user != null)
             {
@@ -33,7 +65,9 @@ namespace Erudio.Controllers
                     Email = user.Email,
                     DateOfBirth = user.DateOfBirth,
                     RegistrationDate = user.RegistrationDate,
-                    ProfilePicture = user.ProfilePicture
+                    ProfilePicture = user.ProfilePicture,
+                    PostedRequests = requests,
+                    TranslatedRequests = translatedRequests
                 });
             }
             return NotFound();
