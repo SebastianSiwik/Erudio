@@ -61,10 +61,12 @@ export const User = ({ userId, className }) => {
 
     useEffect(() => {
         const getUser = async (id) => {
-            const response = await API.get(`user/${id}`);
-            setUser(response.data);
+            if (id) {
+                const response = await API.get(`user/${id}`);
+                setUser(response.data);
+            }
         }
-        getUser(userId && userId);
+        getUser(userId);
     }, [userId]);
 
 
@@ -113,12 +115,14 @@ const RequestMasterDetail = ({ filter, detailHiddenState, chosenRequestState }) 
     useEffect(() => {
         const getRequests = async () => {
             const response = await API.get('request');
-            setRequests(isActive && response.data.sort(sortByDate));
+            if (isActive) {
+                setRequests(response.data.sort(sortByDate));
+            }
         }
 
         let isActive = true;
         getRequests();
-        
+
         return () => {
             isActive = false;
         }
