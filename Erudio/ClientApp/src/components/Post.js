@@ -109,6 +109,8 @@ const Request = ({ requestId, setPopup, isAuthenticated, userId }) => {
     dayjs.extend(relativeTime);
     dayjs.extend(utc);
 
+    const imageMetadata = 'data:image/png;base64,';
+
     const [shouldRedirect, setRedirect] = useState(false);
     const [sendButtonDisabled, setSendButtonDisabled] = useState(true);
     const [translation, setTranslation] = useState('');
@@ -167,7 +169,8 @@ const Request = ({ requestId, setPopup, isAuthenticated, userId }) => {
                 <div>
                     <div className='requested-text-detailed'>{request.text}</div>
                     <div className='context'>{request.context === '' ? '' : 'Context: ' + request.context}</div>
-                    <img className='context-image' alt='' src={request.contextImage} />
+                    <img className='context-image' alt=''
+                        src={request.contextImage ? imageMetadata + request.contextImage : null} />
                 </div>
                 <div className='post-request-buttons'>
                     <Bookmark />

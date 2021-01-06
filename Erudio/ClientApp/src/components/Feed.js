@@ -199,6 +199,8 @@ export const DetailedRequest = ({ hidden, request }) => {
     const relativeTime = require('dayjs/plugin/relativeTime');
     dayjs.extend(relativeTime);
 
+    const imageMetadata = 'data:image/png;base64,';
+
     const [userId, setUserId] = useState(null);
     const [isAuthenticated, setAuthenticated] = useState(false);
     const [shouldRedirect, setRedirect] = useState(false);
@@ -276,7 +278,8 @@ export const DetailedRequest = ({ hidden, request }) => {
             <div className='context'>
                 {request.context === '' || request.context === null ? '' : 'Context: ' + request.context}
             </div>
-            <img alt='' className='context-image' src={request.contextImage} />
+            <img alt='' className='context-image'
+                src={request.contextImage ? imageMetadata + request.contextImage : null} />
             <div className='translation'>
                 <span className='translation-textbox'
                     role='textbox'

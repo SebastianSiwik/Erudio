@@ -51,6 +51,7 @@ button {
     font-size: 18px;
     line-height: 21px;
     text-transform: uppercase;
+    margin-bottom: auto;
 }
 
 Form {
@@ -69,6 +70,15 @@ Form {
     width: 40px;
     height: auto;
     cursor: pointer;
+}
+
+.file-input {
+    padding: 5px;
+    display: none;
+}
+
+.error {
+    color: rgb(230, 0, 0);
 }
 
 h1 {

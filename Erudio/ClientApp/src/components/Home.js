@@ -3,6 +3,7 @@ import authService from './api-authorization/AuthorizeService';
 import { Redirect } from 'react-router-dom'
 import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form } from 'formik';
+import Collapse from '@material-ui/core/Collapse';
 import bubbles from '../images/bubbles.png';
 import swap from '../images/swap.svg';
 import image from '../images/image.svg';
@@ -27,6 +28,9 @@ const TranslationRequestForm = (props) => {
     const [shouldRedirect, setRedirect] = useState(false);
     const [languages, setLanguages] = useState([]);
     const [fromTo, setFromTo] = useState({ 'from': 'Polish', 'to': 'English-UK' });
+    const [fileInputShown, setFileInputShown] = useState(false);
+    const [encodedFile, setEncodedFile] = useState('');
+    const fileInput = React.createRef();
 
     useEffect(() => {
         let isActive = true;
@@ -44,6 +48,18 @@ const TranslationRequestForm = (props) => {
         }
     }, [languages]);
 
+    const encodeContextImageAsURL = () => {
+        if (fileInput.current.files.length) {
+            var file = fileInput.current.files[0];
+            var reader = new FileReader();
+            reader.onloadend = () => {
+                let encoded = reader.result.replace(/^.*,/, '');
+                setEncodedFile(encoded);
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
     const handleSubmit = async (values) => {
         if (!props.isAuthenticated) {
             setRedirect(true);
@@ -53,7 +69,14 @@ const TranslationRequestForm = (props) => {
             values.fromLanguageCode = fromTo.from;
             values.toLanguageCode = fromTo.to;
 
-            await API.post('request', values);
+            const object = { ...values };
+            object.contextImage = encodedFile;
+
+            try {
+                await API.post('request', object);
+            } catch (error) {
+                console.log(error.response);
+            }
 
             setRedirect(true);
         }
@@ -85,6 +108,10 @@ const TranslationRequestForm = (props) => {
         setFromTo(choices);
     }
 
+    const handleImageButtonClick = () => {
+        setFileInputShown(!fileInputShown);
+    }
+
     const validateText = (value) => {
         let error;
         if (!value) {
@@ -103,7 +130,7 @@ const TranslationRequestForm = (props) => {
 
     return (
         <Formik
-            initialValues={{ fromLanguageCode: '', toLanguageCode: '', text: '', context: '' }}
+            initialValues={{ fromLanguageCode: '', toLanguageCode: '', text: '', context: '', contextImage: '' }}
             onSubmit={values => handleSubmit(values)}
         >
             {({ errors }) => (
@@ -138,10 +165,23 @@ const TranslationRequestForm = (props) => {
                         validate={validateText} />
                     <div className='row-container'>
                         <Field className='text-box small-box' name='context' placeholder='Context' />
-                        <img className='image' alt='icon' src={image} />
+                        <img className='image' alt='icon' src={image} onClick={handleImageButtonClick} />
                     </div>
                     <div className='row-container'>
-                        <div>{errors.text && errors.text}</div>
+                        <div>
+
+                            <Collapse in={fileInputShown}>
+                                <label htmlFor='img'>Click me to upload an image</label>
+                                <Field className='file-input'
+                                    id='img'
+                                    innerRef={fileInput}
+                                    onChange={() => encodeContextImageAsURL()}
+                                    type='file'
+                                    accept='image/*'
+                                    name='contextImage' />
+                            </Collapse>
+                            <div className='error'>{errors.text && errors.text}</div>
+                        </div>
                         <button type='submit'>Translate</button>
                     </div>
                     {formRedirect()}
