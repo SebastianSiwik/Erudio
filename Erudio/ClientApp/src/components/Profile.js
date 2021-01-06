@@ -1,6 +1,6 @@
 import API from '../Api';
 import React, { useState, useEffect } from 'react';
-import { Redirect, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import dayjs from 'dayjs'
 import '../App.css';
 import './Profile.css';
@@ -10,15 +10,14 @@ const UserInfo = ({ user }) => {
     const [nativeLanguages, setNativeLanguages] = useState([]);
     const [languagesOfInterest, setLanguagesOfInterest] = useState([]);
 
-    const getLanguages = async () => {
-        const native = await API.get(`nativeLanguage/user/${user?.userId}`);
-        const interest = await API.get(`languageOfInterest/user/${user?.userId}`);
-
-        setNativeLanguages(native.data);
-        setLanguagesOfInterest(interest.data);
-    }
-
     useEffect(() => {
+        const getLanguages = async () => {
+            const native = await API.get(`nativeLanguage/user/${user?.userId}`);
+            const interest = await API.get(`languageOfInterest/user/${user?.userId}`);
+
+            setNativeLanguages(native.data);
+            setLanguagesOfInterest(interest.data);
+        }
         getLanguages();
     }, [user]);
 
@@ -107,18 +106,17 @@ const UserActivity = ({ user }) => {
 }
 
 export const Profile = ({ match }) => {
-    const userId = match.params.userId;
-
     const [user, setUser] = useState({});
 
-    const getUserData = async () => {
-        const response = await API.get(`user/${userId.toString()}`);
-        setUser(response.data);
-    }
-
     useEffect(() => {
+        const userId = match.params.userId;
+
+        const getUserData = async () => {
+            const response = await API.get(`user/${userId.toString()}`);
+            setUser(response.data);
+        }
         getUserData();
-    }, []);
+    }, [match.params.userId]);
 
     return (
         <div className='profile'>

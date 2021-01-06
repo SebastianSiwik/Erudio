@@ -10,7 +10,7 @@ import '../App.css';
 import './Home.css';
 
 const BackgroundImage = () => {
-    return <img className='background right-side' src={bubbles} />;
+    return <img className='background right-side' alt='Background' src={bubbles} />;
 }
 
 const HeaderText = () => {
@@ -116,7 +116,7 @@ const TranslationRequestForm = (props) => {
                                 <option key={language.languageCode} value={language.languageCode}>{language.languageName}</option>
                             ))}
                         </Field>
-                        <img className='image' src={swap} onClick={handleClick} />
+                        <img className='image' alt='icon' src={swap} onClick={handleClick} />
                         <Field value={fromTo.to}
                             as='select'
                             className='text-box small-box'
@@ -135,7 +135,7 @@ const TranslationRequestForm = (props) => {
                         validate={validateText} />
                     <div className='row-container'>
                         <Field className='text-box small-box' name='context' placeholder='Context' />
-                        <img className='image' src={image} />
+                        <img className='image' alt='icon' src={image} />
                     </div>
                     <div className='row-container'>
                         <div>{errors.text && errors.text}</div>
