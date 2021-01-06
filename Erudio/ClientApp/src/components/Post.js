@@ -75,9 +75,8 @@ const TranslationList = ({ requestId, setPopup }) => {
 
     const [translations, setTranslations] = useState([]);
 
-    let isActive = true;
-
     useEffect(() => {
+        let isActive = true;
         const getTranslations = async () => {
             if (isActive) {
                 const response = await API.get(`translation/request/${requestId}`);
@@ -88,7 +87,7 @@ const TranslationList = ({ requestId, setPopup }) => {
         return () => {
             isActive = false
         };
-    }, [translations]);
+    }, [requestId]);
 
     return (
         <div className='translations'>

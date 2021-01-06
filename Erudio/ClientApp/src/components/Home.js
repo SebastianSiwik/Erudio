@@ -28,9 +28,8 @@ const TranslationRequestForm = (props) => {
     const [languages, setLanguages] = useState([]);
     const [fromTo, setFromTo] = useState({ 'from': 'Polish', 'to': 'English-UK' });
 
-    let isActive = true;
-
     useEffect(() => {
+        let isActive = true;
         API.get('languages').then(res => {
             if (isActive) {
                 setLanguages(res.data);

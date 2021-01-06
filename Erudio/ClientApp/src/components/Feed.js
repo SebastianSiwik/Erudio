@@ -60,9 +60,11 @@ export const User = ({ userId, className }) => {
     const [user, setUser] = useState({});
 
     useEffect(() => {
-        API.get(`user/${userId}`).then(res => {
-            setUser(res.data);
-        });
+        if (userId) {
+            API.get(`user/${userId}`).then(res => {
+                setUser(res.data);
+            });
+        }
     }, [userId]);
 
 
@@ -108,9 +110,8 @@ const RequestMasterDetail = ({ filter, detailHiddenState, chosenRequestState }) 
     const [detailHidden, setHidden] = detailHiddenState;
     const [requests, setRequests] = useState([]);
 
-    let isActive = true;
-
     useEffect(() => {
+        let isActive = true;
         API.get('request').then(res => {
             if (isActive) {
                 setRequests(res.data.sort(sortByDate));
