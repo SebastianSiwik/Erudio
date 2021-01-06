@@ -26,13 +26,13 @@ const Like = () => {
     }
 
     return (
-        <img src={liked ? like : likeEmpty} onClick={handleClick} />
+        <img alt='like' src={liked ? like : likeEmpty} onClick={handleClick} />
     );
 }
 
 const Report = ({ setPopup }) => {
     return (
-        <img src={report} onClick={() => setPopup(true)} />
+        <img alt='report' src={report} onClick={() => setPopup(true)} />
     );
 }
 
@@ -44,7 +44,7 @@ const Bookmark = () => {
     }
 
     return (
-        <img src={bookmarked ? star : starEmpty} onClick={handleClick} />
+        <img alt='bookmark' src={bookmarked ? star : starEmpty} onClick={handleClick} />
     );
 }
 
@@ -61,7 +61,7 @@ const Translation = (props) => {
                 <div className='date'>{dayjs(props.date, { 'utc': true }).fromNow()}</div>
                 <div className='translated-text'>{props.text}</div>
                 <div className='context'>{props.explanation}</div>
-                <img className='context-image' src={props.explanationImage} />
+                <img className='context-image' alt='' src={props.explanationImage} />
             </div>
             <div className='translation-buttons'>
                 <Report setPopup={props.setPopup} />
@@ -75,19 +75,18 @@ const TranslationList = ({ requestId, setPopup }) => {
 
     const [translations, setTranslations] = useState([]);
 
-    let active = true;
-
-    const getTranslations = async () => {
-        if (active) {
-            const response = await API.get(`translation/request/${requestId}`);
-            setTranslations(response.data);
-        }
-    }
+    let isActive = true;
 
     useEffect(() => {
+        const getTranslations = async () => {
+            if (isActive) {
+                const response = await API.get(`translation/request/${requestId}`);
+                setTranslations(response.data);
+            }
+        }
         getTranslations();
         return () => {
-            active = false
+            isActive = false
         };
     }, [translations]);
 
@@ -116,14 +115,13 @@ const Request = ({ requestId, setPopup, isAuthenticated, userId }) => {
     const [translation, setTranslation] = useState('');
     const [request, setRequest] = useState({});
 
-    const getRequest = async () => {
-        const result = await API.get(`request/${requestId}`);
-        setRequest(result.data);
-    }
-
     useEffect(() => {
+        const getRequest = async () => {
+            const result = await API.get(`request/${requestId}`);
+            setRequest(result.data);
+        }
         getRequest();
-    }, []);
+    }, [requestId]);
 
     const handleChange = (event) => {
         if (event.target.value.trim() !== '') {
@@ -170,7 +168,7 @@ const Request = ({ requestId, setPopup, isAuthenticated, userId }) => {
                 <div>
                     <div className='requested-text-detailed'>{request.text}</div>
                     <div className='context'>{request.context === '' ? '' : 'Context: ' + request.context}</div>
-                    <img className='context-image' src={request.contextImage} />
+                    <img className='context-image' alt='' src={request.contextImage} />
                 </div>
                 <div className='post-request-buttons'>
                     <Bookmark />
@@ -178,15 +176,15 @@ const Request = ({ requestId, setPopup, isAuthenticated, userId }) => {
                 </div>
             </div>
             <form>
-            <textarea
-                className='text-box post-textarea'
-                placeholder='Translate...'
-                onChange={event => handleChange(event)} />
-            <button className='send-button' disabled={sendButtonDisabled} onClick={handleClick}>
-                <div>Send</div>
-                <img src={sendButtonDisabled ? sendDisabled : send} />
-            </button>
-            {formRedirect()}
+                <textarea
+                    className='text-box post-textarea'
+                    placeholder='Translate...'
+                    onChange={event => handleChange(event)} />
+                <button className='send-button' disabled={sendButtonDisabled} onClick={handleClick}>
+                    <div>Send</div>
+                    <img alt='send' src={sendButtonDisabled ? sendDisabled : send} />
+                </button>
+                {formRedirect()}
             </form>
         </div>
     );

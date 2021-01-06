@@ -1,7 +1,7 @@
 import API from '../Api';
 import authService from './api-authorization/AuthorizeService';
 import { Redirect, Link } from 'react-router-dom'
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs'
 import '../App.css';
 import './Feed.css';
@@ -74,14 +74,14 @@ export const User = ({ userId, className }) => {
 
     return (
         <div className={`user ${className}`}>
-            <img className='avatar' src={getAvatar()} /> {user.userName}
+            <img alt='avatar' className='avatar' src={getAvatar()} /> {user.userName}
         </div>
     );
 }
 
-export class LanguageFromTo extends Component {
+export const LanguageFromTo = ({ from, to }) => {
 
-    getFlag(language) {
+    const getFlag = (language) => {
         switch (language) {
             case 'English-UK':
                 return flagUK;
@@ -94,16 +94,13 @@ export class LanguageFromTo extends Component {
         }
     }
 
-    render() {
-
-        return (
-            <div className='languages'>
-                <img src={this.getFlag(this.props.from)} />
-                <img src={arrow} />
-                <img src={this.getFlag(this.props.to)} />
-            </div>
-        );
-    }
+    return (
+        <div className='languages'>
+            <img alt={from} src={getFlag(from)} />
+            <img alt='arrow' src={arrow} />
+            <img alt={to} src={getFlag(to)} />
+        </div>
+    );
 }
 
 const RequestMasterDetail = ({ filter, detailHiddenState, chosenRequestState }) => {
@@ -180,9 +177,7 @@ export const Request = ({ request, highlighted, onClick }) => {
 
             <LanguageFromTo from={request.fromLanguageCode} to={request.toLanguageCode} />
             <div className='user'>
-                <Link className='link' to={`profile/${request.authorId}`}>
-                    <User userId={request.authorId} />
-                </Link>
+                <User userId={request.authorId} />
             </div>
             <div className='requested-text'>
                 {request.text}
@@ -274,14 +269,14 @@ export const DetailedRequest = ({ hidden, request }) => {
             <div className='context'>
                 {request.context === '' || request.context === null ? '' : 'Context: ' + request.context}
             </div>
-            <img className='context-image' src={request.contextImage} />
+            <img alt='' className='context-image' src={request.contextImage} />
             <div className='translation'>
                 <span className='translation-textbox'
                     role='textbox'
                     placeholder='Translate...'
                     onKeyUp={event => handleKeyUp(event)}
                     contentEditable />
-                <img className='send' src={sendButtonDisabled ? sendDisabled : send} onClick={handleClick} />
+                <img alt='send' className='send' src={sendButtonDisabled ? sendDisabled : send} onClick={handleClick} />
             </div>
             {formRedirect()}
         </div>

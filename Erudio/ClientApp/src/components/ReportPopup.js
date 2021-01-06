@@ -45,7 +45,7 @@ export const ReportPopup = ({ handleClick }) => {
     return (
         <div className='popup-background'>
             <div className='popup'>
-                <img src={letterX} onClick={() => handleClick(false)} />
+                <img alt='X' src={letterX} onClick={() => handleClick(false)} />
                 <h1>Report</h1>
                 <div>
                     <FormControlLabel
