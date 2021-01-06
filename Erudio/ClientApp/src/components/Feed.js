@@ -60,11 +60,11 @@ export const User = ({ userId, className }) => {
     const [user, setUser] = useState({});
 
     useEffect(() => {
-        if (userId) {
-            API.get(`user/${userId}`).then(res => {
-                setUser(res.data);
-            });
+        const getUser = async (id) => {
+            const response = await API.get(`user/${id}`);
+            setUser(response.data);
         }
+        getUser(userId && userId);
     }, [userId]);
 
 
@@ -111,12 +111,14 @@ const RequestMasterDetail = ({ filter, detailHiddenState, chosenRequestState }) 
     const [requests, setRequests] = useState([]);
 
     useEffect(() => {
+        const getRequests = async () => {
+            const response = await API.get('request');
+            setRequests(isActive && response.data.sort(sortByDate));
+        }
+
         let isActive = true;
-        API.get('request').then(res => {
-            if (isActive) {
-                setRequests(res.data.sort(sortByDate));
-            }
-        });
+        getRequests();
+        
         return () => {
             isActive = false;
         }
@@ -227,7 +229,7 @@ export const DetailedRequest = ({ hidden, request }) => {
         }
     }
 
-    const handleClick = () => {
+    const handleClick = async () => {
         if (sendButtonDisabled === false) {
             if (!isAuthenticated) {
                 setRedirect(true);
@@ -238,7 +240,7 @@ export const DetailedRequest = ({ hidden, request }) => {
                 'authorId': userId,
                 'text': translation
             };
-            API.post('translation', object);
+            await API.post('translation', object);
             setRedirect(true);
         }
     }
