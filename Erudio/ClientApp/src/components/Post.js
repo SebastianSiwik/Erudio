@@ -95,9 +95,13 @@ const TranslationList = ({ requestId, setPopup }) => {
         <div className='translations'>
             <h1>Translations</h1>
             <div>
-                {translations.map(translation => (
-                    <Translation {...translation} key={translation.translationId} setPopup={setPopup} />
-                ))}
+                {translations.length !== 0 ?
+                    translations.map(translation => (
+                        <Translation {...translation} key={translation.translationId} setPopup={setPopup} />
+                    ))
+                    :
+                    <div className='information-message'>There are no translations for this request yet. Be the first one to help!</div>
+                }
             </div>
         </div>
     );
@@ -173,6 +177,7 @@ const Request = ({ requestId, setPopup, isAuthenticated, userId }) => {
                     <Report setPopup={setPopup} />
                 </div>
             </div>
+            <form>
             <textarea
                 className='text-box post-textarea'
                 placeholder='Translate...'
@@ -182,6 +187,7 @@ const Request = ({ requestId, setPopup, isAuthenticated, userId }) => {
                 <img src={sendButtonDisabled ? sendDisabled : send} />
             </button>
             {formRedirect()}
+            </form>
         </div>
     );
 }

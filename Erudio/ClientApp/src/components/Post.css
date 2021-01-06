@@ -96,3 +96,9 @@
     margin-left: auto;
     margin-right: 0;
 }
+
+.information-message {
+    width: fit-content;
+    margin: auto;
+    margin-top: 80px;
+}
