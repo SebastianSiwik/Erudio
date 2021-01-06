@@ -1,6 +1,6 @@
 import API from '../Api';
 import authService from './api-authorization/AuthorizeService';
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -55,7 +55,9 @@ const Translation = (props) => {
     return (
         <div className='translation'>
             <div>
-                <User userId={props.authorId} />
+                <Link className='link' to={`/profile/${props.authorId}`}>
+                    <User userId={props.authorId} />
+                </Link>
                 <div className='date'>{dayjs(props.date, { 'utc': true }).fromNow()}</div>
                 <div className='translated-text'>{props.text}</div>
                 <div className='context'>{props.explanation}</div>
@@ -154,7 +156,9 @@ const Request = ({ requestId, setPopup, isAuthenticated, userId }) => {
     return (
         <div className='post-request'>
             <div className='row'>
-                <User userId={request.authorId} />
+                <Link className='link' to={`/profile/${request.authorId}`}>
+                    <User userId={request.authorId} />
+                </Link>
                 <LanguageFromTo from={request.fromLanguageCode} to={request.toLanguageCode} />
             </div>
             <div className='date'>{dayjs(request.date, { 'utc': true }).fromNow()}</div>

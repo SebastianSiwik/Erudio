@@ -47,13 +47,12 @@
     width: 50%;
     height: calc(100vh - 180px);
     box-sizing: border-box;
-    border-radius: 5px;
     overflow: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-.request-list::-webkit-scrollbar {
+::-webkit-scrollbar {
     display: none;
 }
 
@@ -210,4 +209,9 @@
 
 .send {
     align-self: flex-end;
+}
+
+.link, .link:hover {
+    color: inherit;
+    text-decoration: inherit;
 }

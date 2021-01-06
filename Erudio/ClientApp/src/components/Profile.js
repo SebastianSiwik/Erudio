@@ -1,10 +1,27 @@
-import React, { useState } from 'react';
+import API from '../Api';
+import React, { useState, useEffect } from 'react';
+import { Redirect, useHistory } from 'react-router-dom'
+import dayjs from 'dayjs'
 import '../App.css';
 import './Profile.css';
-import { mockUser, feedMockRequests, joshuaMockRequests } from './Mock.js'
 import { User, Request } from './Feed';
 
-const UserInfo = (props) => {
+const UserInfo = ({ user }) => {
+    const [nativeLanguages, setNativeLanguages] = useState([]);
+    const [languagesOfInterest, setLanguagesOfInterest] = useState([]);
+
+    const getLanguages = async () => {
+        const native = await API.get(`nativeLanguage/user/${user?.userId}`);
+        const interest = await API.get(`languageOfInterest/user/${user?.userId}`);
+
+        setNativeLanguages(native.data);
+        setLanguagesOfInterest(interest.data);
+    }
+
+    useEffect(() => {
+        getLanguages();
+    }, [user]);
+
     const getLanguageString = (language) => {
         switch (language) {
             case 'English-UK':
@@ -19,30 +36,30 @@ const UserInfo = (props) => {
     }
 
     const joinLanguagesFromArray = (languageArray) => {
-        return languageArray.map(language => getLanguageString(language)).join(', ');
+        return languageArray.map(language => getLanguageString(language.languageCode)).join(', ');
     }
 
-    const nativeLanguages = joinLanguagesFromArray(props.nativeLanguages);
-    const languagesOfInterest = joinLanguagesFromArray(props.languagesOfInterest);
+    const nativeLanguagesList = joinLanguagesFromArray(nativeLanguages);
+    const languagesOfInterestList = joinLanguagesFromArray(languagesOfInterest);
 
     return (
         <div className='profile-half'>
-            <User className='profile-user' name={props.name} avatar={props.avatar} />
+            <User className='profile-user' userId={user.userId} />
             <div className='user-info'>
                 <span>
-                    Translations: <b>{feedMockRequests.length}</b>
+                    Translations: <b>{user.postedRequests?.length}</b>
                 </span>
                 <span>
-                Requests: <b>{joshuaMockRequests.length}</b>
+                    Requests: <b>{user.translatedRequests?.length}</b>
                 </span>
                 <span>
-                Native language(s): <b>{nativeLanguages}</b>
+                    Native language(s): <b>{nativeLanguagesList}</b>
                 </span>
                 <span>
-                Language(s) of interest: <b>{languagesOfInterest}</b>
+                    Language(s) of interest: <b>{languagesOfInterestList}</b>
                 </span>
                 <span>
-                Account created on: <b>{props.registerDate.toLocaleDateString()}</b>
+                    Account created on: <b>{dayjs(user.registrationDate).format('DD/MM/YYYY')}</b>
                 </span>
             </div>
         </div>
@@ -50,17 +67,26 @@ const UserInfo = (props) => {
 }
 
 const RequestList = ({ requests }) => {
+
+    const history = useHistory();
+
+    const handleClick = (request) => {
+        const path = `/post/${request.requestId}`;
+        history.replace(path);
+    }
+
     return (
         <div className='activity-list'>
-            {requests.map(request => (
-                <Request {...request}
-                    key={request.id} />
+            {requests?.map(request => (
+                <Request request={request}
+                    onClick={handleClick}
+                    key={request.requestId} />
             ))}
         </div>
     );
 }
 
-const UserActivity = () => {
+const UserActivity = ({ user }) => {
     const [filter, setFilter] = useState('Requested');
 
     const handleClick = (event) => {
@@ -75,16 +101,29 @@ const UserActivity = () => {
                 <li className={filter === 'Answered' ? 'highlighted' : ''}
                     onClick={event => handleClick(event)}>Answered</li>
             </ul>
-            <RequestList requests={filter === 'Answered' ? feedMockRequests : joshuaMockRequests} />
+            {<RequestList requests={filter === 'Requested' ? user.postedRequests : user.translatedRequests} />}
         </div>
     );
 }
 
-export const Profile = () => {
+export const Profile = ({ match }) => {
+    const userId = match.params.userId;
+
+    const [user, setUser] = useState({});
+
+    const getUserData = async () => {
+        const response = await API.get(`user/${userId.toString()}`);
+        setUser(response.data);
+    }
+
+    useEffect(() => {
+        getUserData();
+    }, []);
+
     return (
         <div className='profile'>
-            <UserInfo {...mockUser} />
-            <UserActivity />
+            <UserInfo user={user} />
+            <UserActivity user={user} />
         </div>
     );
 }

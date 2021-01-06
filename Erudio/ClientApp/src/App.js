@@ -19,8 +19,8 @@ export default class App extends Component {
       <Layout>
         <Route exact path='/' component={Home} />
         <Route path='/feed' component={Feed} />
-        <Route path='/post/:requestId' component={Post} />
-        <Route path='/profile' component={Profile} />
+        <Route exact path='/post/:requestId' component={Post} />
+        <Route exact path='/profile/:userId' component={Profile} />
         <AuthorizeRoute path='/authorize' component={Home} />
         <AuthorizeRoute path='/authorizeFeed' component={Feed} />
         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />

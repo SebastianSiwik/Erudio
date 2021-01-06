@@ -173,13 +173,16 @@ const RequestList = (props) => {
 export const Request = ({ request, highlighted, onClick }) => {
     const handleClick = onClick;
 
+
     return (
         <div className={`request ${highlighted ? 'request-clicked' : ''}`}
             onClick={() => handleClick(request)}>
 
             <LanguageFromTo from={request.fromLanguageCode} to={request.toLanguageCode} />
             <div className='user'>
-                <User userId={request.authorId} />
+                <Link className='link' to={`profile/${request.authorId}`}>
+                    <User userId={request.authorId} />
+                </Link>
             </div>
             <div className='requested-text'>
                 {request.text}
@@ -259,7 +262,9 @@ export const DetailedRequest = ({ hidden, request }) => {
     return (
         <div className='detailed-request'>
             <div className='row'>
-                <User userId={request.authorId} />
+                <Link className='link' to={`/profile/${request.authorId}`}>
+                    <User userId={request.authorId} />
+                </Link>
                 <LanguageFromTo from={request.fromLanguageCode} to={request.toLanguageCode} />
             </div>
             <Link to={`/post/${request.requestId}`}>
