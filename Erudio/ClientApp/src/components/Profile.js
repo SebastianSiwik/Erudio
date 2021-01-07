@@ -69,6 +69,12 @@ const RequestList = ({ requests }) => {
 
     const history = useHistory();
 
+    const sortByDate = (a, b) => {
+        if (a.date > b.date) return -1;
+        if (a.date < b.date) return 1;
+        return 0;
+    }
+
     const handleClick = (request) => {
         const path = `/post/${request.requestId}`;
         history.replace(path);
@@ -76,20 +82,49 @@ const RequestList = ({ requests }) => {
 
     return (
         <div className='activity-list'>
-            {requests?.map(request => (
-                <Request request={request}
-                    onClick={handleClick}
-                    key={request.requestId} />
-            ))}
+            {requests?.sort(sortByDate)
+                .map(request => (
+                    <Request request={request}
+                        onClick={handleClick}
+                        key={request.requestId} />
+                ))}
         </div>
     );
 }
 
 const UserActivity = ({ user }) => {
     const [filter, setFilter] = useState('Requested');
+    const [bookmarks, setBookmarks] = useState([]);
+
+    useEffect(() => {
+        let isActive = true;
+        const getBookmarks = async () => {
+            const response = await API.get(`requestBookmark/user/${user.userId}`);
+            if (isActive) {
+                setBookmarks(response.data);
+            }
+        }
+        getBookmarks();
+        return () => {
+            isActive = false;
+        }
+    });
 
     const handleClick = (event) => {
         setFilter(event.target.textContent);
+    }
+
+    const getRequestList = (filter) => {
+        switch (filter) {
+            case 'Requested':
+                return user.postedRequests;
+            case 'Answered':
+                return user.translatedRequests;
+            case 'Bookmarked':
+                return bookmarks;
+            default:
+                return [];
+        }
     }
 
     return (
@@ -99,8 +134,10 @@ const UserActivity = ({ user }) => {
                     onClick={event => handleClick(event)}>Requested</li>
                 <li className={filter === 'Answered' ? 'highlighted' : ''}
                     onClick={event => handleClick(event)}>Answered</li>
+                <li className={filter === 'Bookmarked' ? 'highlighted' : ''}
+                    onClick={event => handleClick(event)}>Bookmarked</li>
             </ul>
-            {<RequestList requests={filter === 'Requested' ? user.postedRequests : user.translatedRequests} />}
+            {<RequestList requests={getRequestList(filter)} />}
         </div>
     );
 }
