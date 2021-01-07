@@ -13,6 +13,8 @@
 }
 
 .post-request-buttons {
+    display: flex;
+    flex-direction: row;
     align-self: flex-end;
     margin-left: auto; 
     margin-right: 0;
@@ -93,6 +95,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: flex-end;
     margin-left: auto;
     margin-right: 0;
 }
@@ -102,4 +105,18 @@
     margin: auto;
     margin-top: 80px;
     margin-bottom: 80px;
+}
+
+.count {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 28px;
+    margin-right: 2px;
+}
+
+.count-container {
+    display: flex;
+    align-items: center;
 }

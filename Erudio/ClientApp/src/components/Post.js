@@ -18,15 +18,52 @@ import report from '../images/report.svg';
 import star from '../images/star.svg';
 import starEmpty from '../images/star_empty.svg';
 
-const Like = () => {
+const Like = ({ translationId, userId }) => {
     const [liked, setLiked] = useState(false);
+    const [likes, setLikes] = useState([]);
+
+    useEffect(() => {
+        let isActive = true;
+        const getLikes = async () => {
+            const response = await API.get(`translationLike/${translationId}`);
+            if (isActive) {
+                setLikes(response.data);
+                const userLiked = likes.some(like => like.userId === userId);
+                setLiked(userLiked);
+            }
+        }
+        getLikes();
+        return () => {
+            isActive = false;
+        }
+    });
+
+    const postLike = async () => {
+        await API.post('translationLike', {
+            'translationId': translationId,
+            'userId': userId
+        });
+    }
+
+    const deleteLike = async () => {
+        await API.delete(`translationLike/delete/${translationId}/${userId}`);
+    }
 
     const handleClick = () => {
+        if (liked) {
+            deleteLike();
+        }
+        else {
+            postLike();
+        }
         setLiked(!liked);
     }
 
     return (
-        <img alt='like' src={liked ? like : likeEmpty} onClick={handleClick} />
+        <div className='count-container'>
+            <span className='count'>{likes.length ? likes.length : ''}</span>
+            <img alt='like' src={liked ? like : likeEmpty} onClick={handleClick} />
+        </div>
     );
 }
 
@@ -36,10 +73,44 @@ const Report = ({ setPopup }) => {
     );
 }
 
-const Bookmark = () => {
+const Bookmark = ({ requestId, userId }) => {
     const [bookmarked, setBookmark] = useState(false);
+    const [bookmarks, setBookmarks] = useState([]);
+
+    useEffect(() => {
+        let isActive = true;
+        const getBookmarks = async () => {
+            const response = await API.get(`requestBookmark/${requestId}`);
+            if (isActive) {
+                setBookmarks(response.data);
+                const userBookmarked = bookmarks.some(bookmark => bookmark.userId === userId);
+                setBookmark(userBookmarked);
+            }
+        }
+        getBookmarks();
+        return () => {
+            isActive = false;
+        }
+    });
+
+    const postBookmark = async () => {
+        await API.post('requestBookmark', {
+            'requestId': parseInt(requestId),
+            'userId': userId
+        });
+    }
+
+    const deleteBookmark = async () => {
+        await API.delete(`requestBookmark/delete/${requestId}/${userId}`);
+    }
 
     const handleClick = () => {
+        if (bookmarked) {
+            deleteBookmark();
+        }
+        else {
+            postBookmark();
+        }
         setBookmark(!bookmarked);
     }
 
@@ -65,13 +136,13 @@ const Translation = (props) => {
             </div>
             <div className='translation-buttons'>
                 <Report setPopup={props.setPopup} />
-                <Like />
+                <Like translationId={props.translationId} userId={props.userId} />
             </div>
         </div>
     );
 }
 
-const TranslationList = ({ requestId, setPopup }) => {
+const TranslationList = ({ requestId, setPopup, userId }) => {
 
     const [translations, setTranslations] = useState([]);
 
@@ -95,7 +166,7 @@ const TranslationList = ({ requestId, setPopup }) => {
             <div>
                 {translations.length !== 0 ?
                     translations.map(translation => (
-                        <Translation {...translation} key={translation.translationId} setPopup={setPopup} />
+                        <Translation {...translation} key={translation.translationId} setPopup={setPopup} userId={userId} />
                     ))
                     :
                     <div className='information-message'>There are no translations for this request yet. Be the first one to help!</div>
@@ -173,7 +244,7 @@ const Request = ({ requestId, setPopup, isAuthenticated, userId }) => {
                         src={request.contextImage ? imageMetadata + request.contextImage : null} />
                 </div>
                 <div className='post-request-buttons'>
-                    <Bookmark />
+                    <Bookmark requestId={requestId} userId={userId} />
                     <Report setPopup={setPopup} />
                 </div>
             </div>
@@ -217,7 +288,7 @@ export const Post = ({ match }) => {
     return (
         <div className='post'>
             <Request requestId={requestId} setPopup={setPopup} isAuthenticated={isAuthenticated} userId={userId} />
-            <TranslationList requestId={requestId} setPopup={setPopup} />
+            <TranslationList requestId={requestId} setPopup={setPopup} userId={userId} />
 
             {popupShown ?
                 <ReportPopup handleClick={setPopup} />
