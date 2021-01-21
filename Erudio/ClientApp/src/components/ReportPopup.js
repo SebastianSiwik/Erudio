@@ -39,7 +39,7 @@ export const ReportPopup = ({ handleClick }) => {
       }
 
       const handleSubmit = () => {
-        return <form onSubmit={alert(JSON.stringify(state))} />;
+        return <form onSubmit={handleClick(false)} />;
       }
 
     return (
