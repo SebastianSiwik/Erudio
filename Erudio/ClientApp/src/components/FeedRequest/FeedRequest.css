@@ -1,0 +1,28 @@
+.request {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    box-sizing: border-box;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+.request-clicked {
+    border: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.requested-text {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    text-align: right;
+    color: #5F5F5F;
+}

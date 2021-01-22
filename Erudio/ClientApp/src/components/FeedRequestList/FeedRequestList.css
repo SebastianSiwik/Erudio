@@ -1,0 +1,11 @@
+.request-list {
+    display: flex;
+    flex-direction: column;
+    min-width: 50%;
+    width: 50%;
+    height: calc(100vh - 180px);
+    box-sizing: border-box;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}

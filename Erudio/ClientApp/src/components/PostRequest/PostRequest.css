@@ -1,0 +1,121 @@
+.requested-text-detailed {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 28px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    color: #5F5F5F;
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-self: center;
+}
+
+.row > * {
+    align-self: center;
+}
+
+.date {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    color: #5F5F5F;
+    margin-top: 5px;
+}
+
+.context {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 16px;
+    color: #5F5F5F;
+    white-space: pre-wrap;
+}
+
+.context-image {
+    max-width: 200px;
+    height: auto;
+    margin-top: 5px;
+}
+
+.translation {
+    width: 100%;
+    margin-top: auto;
+    display: flex;
+    flex-direction: row;
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+    padding: 5px;
+}
+
+.link, .link:hover {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.post-request {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: fit-content;
+    box-sizing: border-box;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.post-request-buttons {
+    display: flex;
+    flex-direction: row;
+    align-self: flex-end;
+    margin-left: auto; 
+    margin-right: 0;
+}
+
+.post-request-buttons > * {
+    margin-left: 10px;
+}
+
+.post-request-row {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    border-bottom: 3px solid #A4CCFF;
+    padding-bottom: 10px;
+}
+
+.post-textarea {
+    margin-top: 15px;
+    padding: 5px;
+    height: 90px;
+}
+
+.send-button {
+    margin-top: 15px;
+    width: 138px;
+    height: 46px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.send-button:disabled {
+    border: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.send-button > * {
+    margin: 0px 3px;
+}

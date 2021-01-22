@@ -1,0 +1,104 @@
+.detailed-request {
+    display: flex;
+    flex-direction: column;
+    min-width: 50%;
+    width: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    height: fit-content;
+    box-sizing: border-box;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 0px 10px;
+}
+
+.requested-text-detailed {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 28px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    color: #5F5F5F;
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-self: center;
+}
+
+.row > * {
+    align-self: center;
+}
+
+.date {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    color: #5F5F5F;
+    margin-top: 5px;
+}
+
+.context {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 16px;
+    color: #5F5F5F;
+    white-space: pre-wrap;
+}
+
+.context-image {
+    max-width: 200px;
+    height: auto;
+    margin-top: 5px;
+}
+
+.translation {
+    width: 100%;
+    margin-top: auto;
+    display: flex;
+    flex-direction: row;
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+    padding: 5px;
+}
+
+.translation-textbox {
+    width: 100%;
+    overflow: hidden;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 21px;
+    cursor: text;
+}
+
+.translation-textbox:empty::before {
+    content: 'Translate...';
+    color: rgba(95, 95, 95, 0.5);
+}
+
+.translation-textbox:focus {
+    outline: none;
+}
+
+.send {
+    align-self: flex-end;
+}
+
+.link, .link:hover {
+    color: inherit;
+    text-decoration: inherit;
+}

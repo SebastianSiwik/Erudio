@@ -1,0 +1,9 @@
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 190px);
+    box-sizing: border-box;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}

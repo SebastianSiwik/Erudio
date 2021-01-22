@@ -1,0 +1,66 @@
+textarea {
+    resize: none;
+}
+
+.row-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.text-box {
+    background: #FBFDFF;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    width: 100%;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+}
+
+.small-box {
+    height: 38px;
+}
+
+.big-box {
+    height: 143px;
+}
+
+button {
+    width: 143px;
+    height: 46px;
+    align-self: flex-end;
+    background: #FBFDFF;
+    border: 2px solid #000000;
+    border-radius: 999px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+    text-transform: uppercase;
+    margin-bottom: auto;
+}
+
+Form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.image {
+    width: 40px;
+    height: auto;
+    cursor: pointer;
+}
+
+.file-input {
+    padding: 5px;
+    display: none;
+}
+
+.error {
+    color: rgb(230, 0, 0);
+}

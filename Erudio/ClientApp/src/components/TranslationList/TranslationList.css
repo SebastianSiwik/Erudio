@@ -1,0 +1,18 @@
+.translations > h1 {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 200;
+    font-size: 36px;
+    line-height: 42px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-left: 15px;
+}
+
+.information-message {
+    width: fit-content;
+    margin: auto;
+    margin-top: 80px;
+    margin-bottom: 80px;
+}

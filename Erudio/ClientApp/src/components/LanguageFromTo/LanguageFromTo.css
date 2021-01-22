@@ -1,0 +1,10 @@
+.languages {
+    align-self: flex-end;
+    display: flex;
+    flex-direction: row;
+}
+
+.languages > * {
+    width: 32px;
+    height: 32px;
+}
