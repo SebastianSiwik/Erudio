@@ -18,6 +18,6 @@ window.fetch = () => {
         "post_logout_redirect_uri": "https://localhost:5001/authentication/logout-callback",
         "response_type": "id_token token",
         "scope": "ErudioAPI openid profile"
-     })
+      })
     });
 };

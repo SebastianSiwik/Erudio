@@ -1,28 +1,11 @@
-import API from '../Api';
-import authService from './api-authorization/AuthorizeService';
-import { Redirect } from 'react-router-dom'
 import React, { useEffect, useState } from 'react';
+import API from '../../Api';
+import { Redirect } from 'react-router-dom'
 import { Formik, Field, Form } from 'formik';
 import Collapse from '@material-ui/core/Collapse';
-import bubbles from '../images/bubbles.png';
-import swap from '../images/swap.svg';
-import image from '../images/image.svg';
-import '../App.css';
-import './Home.css';
-
-const BackgroundImage = () => {
-    return <img className='background right-side' alt='Background' src={bubbles} />;
-}
-
-const HeaderText = () => {
-    return (
-        <div>
-            <h1>Have words translated <strong>right</strong></h1>
-            <p className='text-right'>Benefit and contribute</p>
-            <p>Obtain highly accurate translations and contribute to help others!</p>
-        </div>
-    );
-}
+import swap from '../../assets/swap.svg';
+import image from '../../assets/image.svg';
+import './TranslationRequestForm.css';
 
 const TranslationRequestForm = (props) => {
     const [shouldRedirect, setRedirect] = useState(false);
@@ -190,33 +173,4 @@ const TranslationRequestForm = (props) => {
         </Formik>
     );
 }
-
-export const Home = () => {
-    const [isAuthenticated, setAuthenticated] = useState(false);
-    const [userId, setUserId] = useState(null);
-
-    useEffect(() => {
-        const _subscription = authService.subscribe(() => populateState());
-        populateState();
-
-        return () => {
-            authService.unsubscribe(_subscription);
-        }
-    });
-
-    const populateState = async () => {
-        const [isAuthenticated, user] = await Promise.all([authService.isAuthenticated(), authService.getUser()]);
-        setAuthenticated(isAuthenticated);
-        setUserId(user && user.sub);
-    }
-
-    return (
-        <div className='row-container'>
-            <div className='left-side'>
-                <HeaderText />
-                <TranslationRequestForm isAuthenticated={isAuthenticated} userId={userId} />
-            </div>
-            <BackgroundImage />
-        </div>
-    );
-}
+export default TranslationRequestForm;

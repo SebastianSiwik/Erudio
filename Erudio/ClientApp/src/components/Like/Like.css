@@ -1,0 +1,13 @@
+.count {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 28px;
+    margin-right: 2px;
+}
+
+.count-container {
+    display: flex;
+    align-items: center;
+}

@@ -1,0 +1,10 @@
+.left-side {
+    padding: 50px 50px 50px 50px;
+    width: 50%;
+}
+
+.row-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
